@@ -1,7 +1,7 @@
 # OpenTPMS — Open-Source Bicycle Tire Pressure Monitoring Sensor
 
-**Date:** 2026-04-01
-**Status:** Design Approved
+**Date:** 2026-04-01 (updated 2026-04-02)
+**Status:** Design Approved (Rev 2 — pressure sensor + accuracy architecture updated)
 **Author:** simruelland + Claude
 
 ## Overview
@@ -13,6 +13,7 @@ An open-source, in-tire bicycle TPMS sensor with replaceable CR1225 battery, dua
 - **Replaceable battery** — user swaps CR1225 coin cell every 2-3 years during sealant refresh. No potted-forever design.
 - **-30°C to +60°C operating range** — supercapacitor buffer enables fat bike winter riding.
 - **Dual ANT+ and BLE** — native Garmin/Wahoo support AND phone connectivity.
+- **±1% accuracy at 20 PSI** — factory-calibrated MS5837-30BA sensor + Garmin/phone barometer for atmospheric. No user calibration. Plug and play.
 - **Temperature-compensated flat alerts** — eliminates false alarms from weather changes.
 - **Open-source hardware and firmware** — community can build, modify, and improve.
 - **One universal size** — fits 19-30mm internal width rims.
@@ -37,7 +38,7 @@ Two-block symmetric design. PCB strip spans across the rim width (~40mm) with th
 ```
 
 - **Block A (Electronics):** Raytac MDBT42Q nRF52 module, LIS2DH12 accelerometer, supercapacitor, passives. Not user-serviceable (openable for advanced repair/reflash).
-- **Block B (Battery + Pressure):** CR1225 in spring-clip holder, Honeywell ABP pressure sensor with ePTFE membrane in lid. User-serviceable for battery swap.
+- **Block B (Battery + Pressure):** CR1225 in spring-clip holder, TE Connectivity MS5837-30BA pressure sensor (absolute, gel-filled) with ePTFE membrane in lid. User-serviceable for battery swap.
 - **PCB strip:** Rigid 2-layer FR4, 0.8mm thick, conformal coated where exposed between blocks.
 - **Mounting:** Valve stem passes through center hole in PCB. Rim seal sits on top of PCB strip.
 
@@ -49,15 +50,33 @@ Two-block symmetric design. PCB strip spans across the rim width (~40mm) with th
 - **Height Block B:** ~5.5mm
 - **Weight:** ~6.5g per sensor
 
+### Pressure Measurement Architecture
+
+The sensor measures **absolute pressure** (relative to vacuum). Conversion to gauge PSI happens on the receiving device, not on the sensor:
+
+- **Garmin head units:** Custom Connect IQ data field reads `Activity.Info.rawAmbientPressure` from Garmin's built-in barometer and subtracts it from the sensor's absolute reading. Plug and play — no phone or calibration needed.
+- **Phones:** Web Bluetooth app reads the phone's barometer via Web Sensor API and subtracts atmospheric. Same result.
+- **Factory calibration:** Each sensor is calibrated at 3-5 known pressures during assembly. Correction polynomial stored in nRF52 flash. Removes systematic sensor error, leaving ±5-10 mbar residual.
+
+**Accuracy budget at 20 PSI:**
+
+| Error Source | Contribution |
+|---|---|
+| MS5837-30BA after factory cal | ±5-10 mbar (±0.07-0.15 PSI) |
+| Garmin barometer | ±1 mbar (±0.015 PSI) |
+| **Combined** | **±0.09-0.17 PSI (±0.4-0.8% at 20 PSI)** |
+
 ### Data Flow
 
 1. Wheel spins → accelerometer detects motion → MCU wakes from deep sleep
-2. Read pressure sensor + temperature
-3. Temperature-compensated flat detection logic evaluates readings
-4. Transmit on ANT+ and BLE (every 3 seconds)
-5. If pressure drop exceeds thermal explanation → trigger flat alert
-6. MCU returns to sleep until next TX interval
-7. 5 minutes no motion → full deep sleep (~3µA)
+2. Read pressure sensor (absolute) + temperature
+3. Apply factory calibration polynomial to raw reading
+4. Temperature-compensated flat detection logic evaluates readings (uses absolute pressure changes — no atmospheric needed for flat detection)
+5. Transmit **absolute pressure + temperature** on ANT+ and BLE (every 3 seconds)
+6. Receiving device (Garmin/phone) subtracts atmospheric to display gauge PSI
+7. If pressure drop exceeds thermal explanation → trigger flat alert
+8. MCU returns to sleep until next TX interval
+9. 5 minutes no motion → full deep sleep (~3µA)
 
 ---
 
@@ -68,9 +87,9 @@ Two-block symmetric design. PCB strip spans across the rim width (~40mm) with th
 | Component | Part | Key Specs | Package | Est. Cost |
 |-----------|------|-----------|---------|-----------|
 | MCU + Radio | Raytac MDBT42Q-512KV2 | nRF52832, BLE 5.0 + ANT+, chip antenna, pre-certified FCC/CE/IC | 10.5 x 15.5 x 2.2mm | $3.50 |
-| Pressure Sensor | Honeywell ABP series (150 PSI variant) | 0-150 PSI gauge, ±0.25% accuracy, I2C, built-in temp, -40 to +85°C | 5 x 5 x 3.3mm | $7.00 |
+| Pressure Sensor | TE Connectivity MS5837-30BA (MS583730BA01-50) | 0-30 bar absolute (435 PSI), ±50 mbar raw (±0.15 PSI after factory cal), I2C addr 0x76, built-in 24-bit temp, -20 to +85°C, gel-filled | 3.3 x 3.3 x 2.75mm | $11.09 |
 | Accelerometer | ST LIS2DH12 | 3-axis, motion-detect IRQ wake, 1.8µA low-power, I2C, -40 to +85°C | 2 x 2 x 1mm LGA-12 | $0.80 |
-| Supercapacitor | AVX BestCap or similar | 47-100mF, 3.5V, low ESR, -40 to +85°C | ~5 x 5 x 1.5mm | $0.40 |
+| Supercapacitor | KEMET FC0H473ZFTBR24 | 47mF, 5.5V, EDLC, SMD | ~5 x 5 x 1.5mm | $3.85 |
 | Battery | Panasonic CR1225 (industrial/extended temp) | 3V, 48mAh, -30 to +70°C | 12.5mm dia x 2.5mm | $0.50 |
 | Battery Holder | Linx BAT-HLD-012-SMT or similar | CR1225 spring-clip, SMD, vibration-resistant | ~14 x 14 x 3mm | $0.30 |
 | ePTFE Membrane | Porex PMV10 or generic ePTFE disc | Hydrophobic, air-permeable, sealant-resistant | ~4mm disc | $0.15 |
@@ -83,10 +102,10 @@ Two-block symmetric design. PCB strip spans across the rim width (~40mm) with th
 
 ### BOM Summary Per Sensor
 
-- **Electronics:** ~$12.50 (MCU + sensors + passives + supercap)
+- **Electronics:** ~$24 (MCU $4.95 + MS5837 $11.09 + accel $2.47 + supercap $3.85 + holder $2.21 + passives $0.62)
 - **Mechanical:** ~$4.35 (enclosure + PCB + screws + O-rings + membrane)
-- **Total per sensor:** ~$16.85
-- **Total per pair:** ~$33.70 (before assembly labor)
+- **Total per sensor:** ~$28
+- **Total per pair:** ~$56 (before assembly labor)
 
 ### Weight Breakdown Per Sensor
 
@@ -126,7 +145,7 @@ DEEP_SLEEP (~3µA) ──[motion detected]──► WAKING (read sensors, init r
 
 ### Firmware Modules
 
-1. **Pressure Manager:** Reads Honeywell ABP via I2C. Returns calibrated pressure (PSI) and temperature (°C). Handles sensor initialization and error recovery.
+1. **Pressure Manager:** Reads TE MS5837-30BA via I2C. Applies factory calibration polynomial (stored in flash) to raw 24-bit reading. Returns absolute pressure (mbar) and temperature (°C). The sensor transmits absolute pressure — gauge conversion happens on the receiving device (Garmin/phone).
 
 2. **Motion Manager:** Configures LIS2DH12 motion-detect interrupt. Wakes MCU on wheel rotation. Reports motion/no-motion state. Manages 5-minute inactivity timeout.
 
@@ -203,12 +222,12 @@ Cross-section (side view):
 | Layer | Thickness |
 |-------|-----------|
 | PCB (is the floor) | 0.8mm |
-| Tallest component (pressure sensor 3.3mm or battery holder+CR1225 3.0mm) | 3.3mm |
+| Tallest component (battery holder+CR1225 3.0mm; MS5837 is only 2.75mm) | 3.0mm |
 | O-ring (compressed) | 0.5mm |
 | Lid (ASA, 1.2mm) | 1.2mm |
-| **Total** | **5.8mm** |
+| **Total** | **5.5mm** |
 
-Note: The Honeywell ABP pressure sensor (3.3mm) is the height-limiting component in Block B, not the battery. If 5.8mm is too tight for insert compatibility, a thinner pressure transducer (e.g., TE Connectivity MS5837, 3.3mm, or Bosch BMP388, 2.0mm at ±1% accuracy) can be substituted to bring height down to 5.5mm.
+Note: The MS5837-30BA (2.75mm) is shorter than the battery stack (3.0mm), so the battery holder is now the height-limiting component. This is an improvement over the previous Honeywell ABP design (3.3mm sensor was the limiter at 5.8mm total).
 
 ### 3D Printing Specifications
 
@@ -244,25 +263,35 @@ Note: The Honeywell ABP pressure sensor (3.3mm) is the height-limiting component
 
 ### ANT+ Tire Pressure Profile
 
-Standard ANT+ broadcast. Native support on any ANT+ head unit with tire pressure capability. No app or data field required.
+ANT+ broadcast of **absolute pressure** (mbar). A custom Connect IQ data field on the Garmin reads the sensor's absolute pressure AND the Garmin's built-in barometer (`Activity.Info.rawAmbientPressure`), subtracts atmospheric, and displays gauge PSI. No phone needed.
 
-- Pressure: 0.01 PSI resolution
+- Pressure: absolute, 0.01 mbar resolution
 - Temperature: 0.01°C resolution
 - Sensor location: Front/Rear
 - Battery status: OK/Low/Critical
 - Broadcast interval: 3 seconds (configurable 1-10s)
 - **License:** ANT+ adopter license required (~$100/year for small volume)
 
+### Garmin Connect IQ Data Field
+
+Custom data field written in Monkey C. This is the primary user interface for Garmin users:
+- Reads absolute tire pressure from sensor via ANT+
+- Reads `Activity.Info.rawAmbientPressure` from Garmin's barometer (API Level 2.4.0+)
+- Computes and displays: `gauge_psi = (tire_absolute - atmospheric) * 0.0145038`
+- Shows front/rear pressure, temperature, battery status
+- Triggers audible alert on flat detection
+- Available on Connect IQ store for free download
+
 ### BLE Custom GATT Service
 
-128-bit custom UUIDs. Supports read, write, and notify for configuration and live data. Used by Web Bluetooth config tool and future native app.
+128-bit custom UUIDs. Transmits **absolute pressure** (mbar). Phone app reads phone barometer for atmospheric subtraction.
 
 ### v1 Configuration: Web Bluetooth
 
 - Web page hosted on GitHub Pages, opened in Chrome
-- Scans for and connects to sensor via Web Bluetooth API
-- Displays: current pressure, temperature, battery level
-- Configures: sensor location (F/R), alert threshold, TX interval, baseline P/T
+- Reads phone barometer (Web Sensor API / Generic Sensor API) for atmospheric reference
+- Displays: gauge pressure (absolute - atmospheric), temperature, battery level
+- Configures: sensor location (F/R), alert threshold, TX interval
 - **iOS limitation:** Safari doesn't support Web Bluetooth. Use Bluefy browser (free) as workaround until native app is built.
 
 ### OTA Firmware Updates
@@ -274,15 +303,15 @@ Standard ANT+ broadcast. Native support on any ANT+ head unit with tire pressure
 
 ### Device Compatibility
 
-| Device | Live Pressure | Flat Alerts | Config | OTA | Protocol |
-|--------|:---:|:---:|:---:|:---:|----------|
-| Garmin Edge 530+ | ✓ | ✓ | — | — | ANT+ native |
-| Garmin Fenix/Forerunner | ✓ | ✓ | — | — | ANT+ native |
-| Wahoo Elemnt/Bolt/Roam | ✓ | ? | — | — | ANT+ (if TPMS supported) |
-| Hammerhead Karoo 2/3 | ✓ | ✓ | — | — | ANT+ or BLE extension |
-| Android Phone (Chrome) | ✓ | ✓ | ✓ | ✓ | BLE + Web Bluetooth |
-| iPhone (Bluefy browser) | ✓ | ✓ | ✓ | — | BLE + Web BLE workaround |
-| iPhone (nRF Connect) | — | — | — | ✓ | BLE DFU only |
+| Device | Live Gauge PSI | Atmospheric Source | Flat Alerts | Config | OTA | Protocol |
+|--------|:---:|---|:---:|:---:|:---:|----------|
+| Garmin Edge 530+ | ✓ | Garmin barometer (rawAmbientPressure) | ✓ | — | — | ANT+ + Connect IQ data field |
+| Garmin Fenix/Forerunner | ✓ | Garmin barometer | ✓ | — | — | ANT+ + Connect IQ data field |
+| Wahoo Elemnt/Bolt/Roam | ✓ | Wahoo barometer (if API available) | ? | — | — | ANT+ |
+| Hammerhead Karoo 2/3 | ✓ | Karoo barometer | ✓ | — | — | ANT+ or BLE extension |
+| Android Phone (Chrome) | ✓ | Phone barometer (Web Sensor API) | ✓ | ✓ | ✓ | BLE + Web Bluetooth |
+| iPhone (Bluefy browser) | ✓ | Phone barometer | ✓ | ✓ | — | BLE + Web BLE workaround |
+| iPhone (nRF Connect) | — | — | — | — | ✓ | BLE DFU only |
 
 ---
 
@@ -296,7 +325,7 @@ Standard ANT+ broadcast. Native support on any ANT+ head unit with tire pressure
 
 ### Critical Test Procedures & Pass Criteria
 
-1. **Pressure Accuracy:** ±0.5% of calibrated reference at 10 PSI increments (0-125 PSI). Repeat at -30°C, 20°C, 60°C.
+1. **Pressure Accuracy:** After factory calibration, ±1% of reading at 20 PSI (±0.2 PSI) when paired with a barometer-equipped head unit (Garmin) or phone. Test at 10, 20, 30, 60, 100 PSI. Repeat at -20°C, 20°C, 60°C.
 2. **Seal Integrity:** Zero moisture ingress after 30 min at 1m depth (IP67). No sealant inside enclosure after 100km ride with sealant.
 3. **RF Range:** Zero dropouts over 1-hour ride on aluminum and carbon rims. Connection maintained to ≥3m line-of-sight.
 4. **Battery Life:** Deep sleep <5µA, average riding current <20µA, calculated life >2 years at 1hr/day.
@@ -332,7 +361,8 @@ Standard ANT+ broadcast. Native support on any ANT+ head unit with tire pressure
 9. **Insert battery:** Place CR1225 in Block B spring-clip holder.
 10. **Close lids:** Screw down both lids with M1.2 Allen screws + Loctite 222. Dab silicone grease on hex sockets.
 11. **Flash firmware:** Connect J-Link to SWD pads on PCB strip. Flash bootloader + application firmware. Assign serial number and default F/R designation.
-12. **QC test:** Verify pressure reading, BLE/ANT+ broadcast, motion wake, seal check (visual).
+12. **Factory pressure calibration:** Using a hand pump + reference gauge, test sensor at 3-5 known absolute pressures (e.g., atmospheric, 1.5 bar, 3 bar, 5 bar, 8 bar). Record sensor reading vs reference at each point. Compute correction polynomial coefficients. Write to nRF52 flash via SWD. ~5 minutes per sensor.
+13. **QC test:** Verify corrected pressure reading matches reference within ±0.15 PSI, BLE/ANT+ broadcast, motion wake, seal check (visual).
 
 ### Scale-Up Path
 
@@ -345,8 +375,9 @@ Standard ANT+ broadcast. Native support on any ANT+ head unit with tire pressure
 ## 8. Open-Source Deliverables
 
 - **Hardware:** KiCad PCB design files (schematic + layout), BOM, Gerber files
-- **Firmware:** nRF5 SDK project (C), SoftDevice configuration, build scripts
+- **Firmware:** nRF5 SDK project (C), SoftDevice configuration, build scripts, factory calibration tool
+- **Garmin Connect IQ Data Field:** Monkey C app that reads sensor absolute pressure + Garmin barometer, displays gauge PSI. Published on Connect IQ store.
 - **Enclosure:** STEP/STL files for 3D printing, assembly drawings
-- **Web Config Tool:** HTML/JS Web Bluetooth configuration page
-- **Documentation:** Assembly guide, user manual, testing procedures, insert compatibility results
-- **License:** CERN Open Hardware License v2 (hardware), MIT (firmware/software)
+- **Web Config Tool:** HTML/JS Web Bluetooth configuration page with phone barometer integration
+- **Documentation:** Assembly guide, user manual, factory calibration procedure, testing procedures, insert compatibility results
+- **License:** CERN Open Hardware License v2 (hardware), MIT (firmware/software/Connect IQ app)
