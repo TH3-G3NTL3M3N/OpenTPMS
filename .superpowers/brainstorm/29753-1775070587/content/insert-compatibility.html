@@ -1,0 +1,98 @@
+<h2>Tire Insert Compatibility Analysis</h2>
+<p class="subtitle">Can our sensor fit alongside popular tire inserts? All inserts have a valve stem cutout — our sensor lives there.</p>
+
+<div class="section">
+  <h3>Insert Cross-Section Profiles vs Our Sensor</h3>
+  <p>All inserts use a T-shape or teacup profile. The narrow base sits in the rim bed, the wider top supports the sidewall. The valve stem area always has a cutout or channel.</p>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">CushCore Pro (MTB)</h4>
+      <table style="width: 100%; font-size: 14px;">
+        <tr><td style="color: #888;">Cross section:</td><td>55mm wide x 23mm tall</td></tr>
+        <tr><td style="color: #888;">Base width on rim bed:</td><td>~20-25mm (narrow base)</td></tr>
+        <tr><td style="color: #888;">Rim bed contact height:</td><td>~8-10mm at narrowest</td></tr>
+        <tr><td style="color: #888;">Valve cutout:</td><td>Uses proprietary valve with cross-drilled hole. Insert presses against valve area.</td></tr>
+        <tr><td style="color: #888;">Rim width:</td><td>22-35mm internal</td></tr>
+      </table>
+      <p style="color: #ff6b6b; font-size: 13px; margin-bottom: 0;">⚠ TIGHT FIT — CushCore sits directly on valve stem base. Our sensor height is critical here.</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">CushCore Trail / XC</h4>
+      <table style="width: 100%; font-size: 14px;">
+        <tr><td style="color: #888;">Cross section:</td><td>55mm wide x 19mm tall (Trail) / smaller (XC)</td></tr>
+        <tr><td style="color: #888;">Base on rim bed:</td><td>~18-22mm</td></tr>
+        <tr><td style="color: #888;">Rim bed height:</td><td>~6-8mm at base</td></tr>
+        <tr><td style="color: #888;">Valve cutout:</td><td>Same proprietary valve system</td></tr>
+        <tr><td style="color: #888;">Rim width:</td><td>22-35mm (Trail), 22-32mm (XC)</td></tr>
+      </table>
+      <p style="color: #ffa500; font-size: 13px; margin-bottom: 0;">⚠ MODERATE — shorter profile gives more clearance</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">Tannus Armour Tubeless</h4>
+      <table style="width: 100%; font-size: 14px;">
+        <tr><td style="color: #888;">Foam thickness:</td><td>14-20mm compressed</td></tr>
+        <tr><td style="color: #888;">Design:</td><td>Wings sit against/above tire bead</td></tr>
+        <tr><td style="color: #888;">Valve area:</td><td>Open channel — doesn't obstruct valve. Works with standard valves.</td></tr>
+        <tr><td style="color: #888;">Rim width:</td><td>19mm+ internal</td></tr>
+      </table>
+      <p style="color: #4ecdc4; font-size: 13px; margin-bottom: 0;">✓ GOOD FIT — open valve channel means plenty of clearance</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">Vittoria Air-Liner</h4>
+      <table style="width: 100%; font-size: 14px;">
+        <tr><td style="color: #888;">Design:</td><td>Lightweight foam tube</td></tr>
+        <tr><td style="color: #888;">Valve area:</td><td>Uses side-entry "Multiway" valve. Insert has channel for valve.</td></tr>
+        <tr><td style="color: #888;">Rim width:</td><td>Various sizes</td></tr>
+      </table>
+      <p style="color: #4ecdc4; font-size: 13px; margin-bottom: 0;">✓ GOOD FIT — valve channel design leaves space</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Our Sensor Height Budget</h3>
+  <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px;">
+    <table style="width: 100%; font-size: 14px; line-height: 2;">
+      <tr style="border-bottom: 1px solid #333;">
+        <td style="color: #888; width: 50%;">CR1225 battery height:</td>
+        <td><strong>2.5mm</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #333;">
+        <td style="color: #888;">PCB thickness (4-layer FR4):</td>
+        <td><strong>0.8mm</strong> (using thin PCB)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #333;">
+        <td style="color: #888;">Components on PCB (nRF module, sensor, etc):</td>
+        <td><strong>~1.5mm</strong> tallest component</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #333;">
+        <td style="color: #888;">Enclosure walls + O-ring + screw heads:</td>
+        <td><strong>~1.5mm</strong> (top + bottom shell)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #333;">
+        <td style="color: #888;">Supercapacitor:</td>
+        <td><strong>~1.5mm</strong></td>
+      </tr>
+      <tr style="font-size: 16px; color: #7c83ff;">
+        <td><strong>TOTAL estimated height:</strong></td>
+        <td><strong>~5.5 - 6.5mm</strong></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Verdict</h3>
+  <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px;">
+    <p><strong>Tannus & Vittoria:</strong> <span style="color: #4ecdc4;">Compatible</span> — open valve channels leave plenty of room for a 5.5-6.5mm sensor.</p>
+    <p><strong>CushCore Trail/XC:</strong> <span style="color: #ffa500;">Likely compatible</span> — 6-8mm base height with valve cutout should clear our sensor, but needs physical testing during prototyping.</p>
+    <p><strong>CushCore Pro:</strong> <span style="color: #ff6b6b;">Tight / may require trimming</span> — 8-10mm base sits very close to valve stem. Our 5.5-6.5mm sensor might fit in the valve cutout but it's borderline. CushCore Pro users already use proprietary valves, so some accommodation is expected.</p>
+    <p style="margin-bottom: 0;"><strong>Recommendation:</strong> Target ≤5.5mm total height. This clears all inserts except possibly CushCore Pro, which we'll verify during prototyping and document compatibility.</p>
+  </div>
+</div>

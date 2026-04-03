@@ -1,0 +1,73 @@
+<h2>Overall Architecture Approaches</h2>
+<p class="subtitle">Three ways to structure the hardware, firmware, and manufacturing. All share the same requirements — the difference is how we get there.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Module-First (Recommended)</h3>
+      <p>Build entirely around a pre-certified nRF52 module (e.g., Raytac MDBT42Q). The module IS the brain — our custom PCB is just a carrier board connecting the module to the pressure sensor, accelerometer, supercap, and battery holder.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Fastest path to working prototype — module handles all RF, antenna, crystal, decoupling</li>
+          <li>Pre-certified (FCC/CE/IC) — skip $15-20k in testing</li>
+          <li>Simple 2-layer carrier PCB — cheap to fab, easy to design for a first-timer</li>
+          <li>Module datasheet tells you exactly how to connect everything</li>
+          <li>Can move to bare-chip in v2 if volume justifies it</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Module is ~$3-5 vs ~$2 for bare nRF52 chip — adds ~$2/unit</li>
+          <li>Module footprint is slightly larger than bare chip (10x15mm vs 5x5mm)</li>
+          <li>Less control over antenna placement — use what the module gives you</li>
+        </ul></div>
+      </div>
+      <p style="color: #4ecdc4; margin-bottom: 0;"><strong>Best for:</strong> Learning PCB design while actually shipping a product. Minimizes risk on the hardest part (RF).</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Bare-Chip Custom</h3>
+      <p>Design a fully custom PCB with a bare nRF52832 chip, external crystal, matching network, and PCB trace antenna. Everything from scratch.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Smallest possible footprint — bare chip is 5x5mm QFN</li>
+          <li>Full control over antenna design and placement</li>
+          <li>Lowest BOM cost at volume (~$1-2 saved per unit)</li>
+          <li>Maximum design flexibility</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Requires RF design experience — impedance matching, antenna tuning</li>
+          <li>4-layer PCB minimum for proper RF routing — 2-3x fab cost</li>
+          <li>Must do full FCC/CE certification ($15-20k+)</li>
+          <li>Higher risk of RF issues in first revision</li>
+          <li>Steep learning curve for someone new to PCB design</li>
+        </ul></div>
+      </div>
+      <p style="color: #ff6b6b; margin-bottom: 0;"><strong>Best for:</strong> Experienced hardware engineers or high-volume production (10k+ units).</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Dev Board Prototype → Custom Production</h3>
+      <p>Start with an nRF52 dev board (like Adafruit Feather nRF52) wired to sensors on a breadboard. Validate firmware and algorithms. Then design the custom PCB for production.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Validate firmware before committing to hardware — cheapest way to test algorithms</li>
+          <li>Can test pressure sensor, accelerometer, BLE/ANT+ on your desk immediately</li>
+          <li>Zero PCB design needed for phase 1</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Dev board doesn't fit inside a tire — can't do real-world testing until custom PCB</li>
+          <li>Two full design phases instead of one — doubles timeline</li>
+          <li>Risk of firmware assumptions that don't translate to final hardware</li>
+          <li>Dev boards use different GPIO pins, power rails — firmware needs porting anyway</li>
+        </ul></div>
+      </div>
+      <p style="color: #ffa500; margin-bottom: 0;"><strong>Best for:</strong> Pure software people who want to validate algorithms before touching hardware.</p>
+    </div>
+  </div>
+</div>

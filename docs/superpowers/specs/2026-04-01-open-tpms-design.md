@@ -11,7 +11,7 @@ An open-source, in-tire bicycle TPMS sensor with replaceable CR1225 battery, dua
 ### Key Differentiators vs Outrider TL Pro/Mini
 
 - **Replaceable battery** — user swaps CR1225 coin cell every 2-3 years during sealant refresh. No potted-forever design.
-- **-30°C to +60°C operating range** — supercapacitor buffer enables fat bike winter riding.
+- **-30°C to +60°C operating range** — ceramic buffer capacitor enables reliable TX in cold weather. Note: MS5837-30BA pressure sensor is rated -20°C to +85°C; accuracy below -20°C is unguaranteed but sensor will function. Test during prototyping.
 - **Dual ANT+ and BLE** — native Garmin/Wahoo support AND phone connectivity.
 - **±1% accuracy at 20 PSI** — factory-calibrated MS5837-30BA sensor + Garmin/phone barometer for atmospheric. No user calibration. Plug and play.
 - **Temperature-compensated flat alerts** — eliminates false alarms from weather changes.
@@ -89,7 +89,7 @@ The sensor measures **absolute pressure** (relative to vacuum). Conversion to ga
 | MCU + Radio | Raytac MDBT42Q-512KV2 | nRF52832, BLE 5.0 + ANT+, chip antenna, pre-certified FCC/CE/IC | 10.5 x 15.5 x 2.2mm | $3.50 |
 | Pressure Sensor | TE Connectivity MS5837-30BA (MS583730BA01-50) | 0-30 bar absolute (435 PSI), ±50 mbar raw (±0.15 PSI after factory cal), I2C addr 0x76, built-in 24-bit temp, -20 to +85°C, gel-filled | 3.3 x 3.3 x 2.75mm | $11.09 |
 | Accelerometer | ST LIS2DH12 | 3-axis, motion-detect IRQ wake, 1.8µA low-power, I2C, -40 to +85°C | 2 x 2 x 1mm LGA-12 | $0.80 |
-| Supercapacitor | KEMET FC0H473ZFTBR24 | 47mF, 5.5V, EDLC, SMD | ~5 x 5 x 1.5mm | $3.85 |
+| TX Buffer Cap | Murata GRM31CR60J227ME11L | 220µF, 6.3V, X5R ceramic, 1206. ~143µF effective after DC bias derating at 3V. Buffers 12mA TX bursts in cold weather. | 3.2 x 1.6 x 1.6mm | $0.20 |
 | Battery | Panasonic CR1225 (industrial/extended temp) | 3V, 48mAh, -30 to +70°C | 12.5mm dia x 2.5mm | $0.50 |
 | Battery Holder | Linx BAT-HLD-012-SMT or similar | CR1225 spring-clip, SMD, vibration-resistant | ~14 x 14 x 3mm | $0.30 |
 | ePTFE Membrane | Porex PMV10 or generic ePTFE disc | Hydrophobic, air-permeable, sealant-resistant | ~4mm disc | $0.15 |

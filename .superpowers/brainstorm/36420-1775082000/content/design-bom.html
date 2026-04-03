@@ -1,0 +1,157 @@
+<h2>Design Section 2: Component Selection & BOM</h2>
+<p class="subtitle">Key components, estimated costs per sensor unit, and alternates</p>
+
+<div class="section">
+  <h3>Primary Components</h3>
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+      <thead>
+        <tr style="border-bottom: 2px solid #444; text-align: left;">
+          <th style="padding: 10px; color: #7c83ff;">Component</th>
+          <th style="padding: 10px; color: #7c83ff;">Part</th>
+          <th style="padding: 10px; color: #7c83ff;">Key Specs</th>
+          <th style="padding: 10px; color: #7c83ff;">Package</th>
+          <th style="padding: 10px; color: #7c83ff;">Est. Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>MCU + Radio</strong></td>
+          <td style="padding: 10px;">Raytac MDBT42Q-512KV2</td>
+          <td style="padding: 10px;">nRF52832, BLE 5.0 + ANT+, chip antenna, 512KB flash, 64KB RAM, pre-certified FCC/CE/IC</td>
+          <td style="padding: 10px;">10.5 x 15.5 x 2.2mm</td>
+          <td style="padding: 10px;">$3.50</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>Pressure Sensor</strong></td>
+          <td style="padding: 10px;">Honeywell ABPDANT015PGAA5</td>
+          <td style="padding: 10px;">0-15 PSI gauge (0-103 kPa), ±0.25% accuracy, I2C, built-in temp sensor, -40 to +85°C</td>
+          <td style="padding: 10px;">5 x 5 x 3.3mm (DIP-8 SMD)</td>
+          <td style="padding: 10px;">$7.00</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333; background: #1a1a2e;">
+          <td style="padding: 10px; color: #ffa500;" colspan="5">⚠ Note: 15 PSI = 103 kPa. We need 0-125 PSI = 0-862 kPa. Need to select correct range variant — e.g., ABPDANT100PGAA5 (100 PSI) or ABPDANT150PGAA5 (150 PSI). Pricing similar. Will confirm exact part number in spec.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>Accelerometer</strong></td>
+          <td style="padding: 10px;">ST LIS2DH12</td>
+          <td style="padding: 10px;">3-axis, motion-detect interrupt wake, 1.8µA in low-power mode, I2C/SPI, -40 to +85°C</td>
+          <td style="padding: 10px;">2 x 2 x 1mm (LGA-12)</td>
+          <td style="padding: 10px;">$0.80</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>Supercapacitor</strong></td>
+          <td style="padding: 10px;">AVX BestCap BZ015B503Z or similar</td>
+          <td style="padding: 10px;">47-100mF, 3.5V rated, low ESR, -40 to +85°C</td>
+          <td style="padding: 10px;">~5 x 5 x 1.5mm</td>
+          <td style="padding: 10px;">$0.40</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>Battery</strong></td>
+          <td style="padding: 10px;">Panasonic CR1225 (industrial grade)</td>
+          <td style="padding: 10px;">3V, 48mAh, -30 to +70°C (extended temp variant)</td>
+          <td style="padding: 10px;">12.5mm dia x 2.5mm</td>
+          <td style="padding: 10px;">$0.50</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>Battery Holder</strong></td>
+          <td style="padding: 10px;">Linx BAT-HLD-012-SMT or similar</td>
+          <td style="padding: 10px;">CR1225 spring-clip, SMD mount, vibration-resistant</td>
+          <td style="padding: 10px;">~14 x 14 x 3mm</td>
+          <td style="padding: 10px;">$0.30</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>ePTFE Membrane</strong></td>
+          <td style="padding: 10px;">Porex PMV10 or generic ePTFE disc</td>
+          <td style="padding: 10px;">Hydrophobic, air-permeable, sealant-resistant, IP67+ rated</td>
+          <td style="padding: 10px;">~4mm disc, die-cut</td>
+          <td style="padding: 10px;">$0.15</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>Screws</strong></td>
+          <td style="padding: 10px;">M1.2 x 3mm stainless steel</td>
+          <td style="padding: 10px;">Hex socket (Allen), 2 per block, 4 total per sensor</td>
+          <td style="padding: 10px;">1.2mm head</td>
+          <td style="padding: 10px;">$0.20</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>O-Rings</strong></td>
+          <td style="padding: 10px;">Silicone, custom size</td>
+          <td style="padding: 10px;">Chemical-resistant, -60 to +200°C, 2 per sensor</td>
+          <td style="padding: 10px;">~12 x 1mm cross-section</td>
+          <td style="padding: 10px;">$0.10</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>Passives</strong></td>
+          <td style="padding: 10px;">Various 0402 caps, resistors</td>
+          <td style="padding: 10px;">Decoupling, pull-ups, filtering. ~10-15 components</td>
+          <td style="padding: 10px;">0402</td>
+          <td style="padding: 10px;">$0.30</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>PCB</strong></td>
+          <td style="padding: 10px;">2-layer FR4, 0.8mm, ENIG finish</td>
+          <td style="padding: 10px;">~16 x 40mm strip with valve hole, conformal coated</td>
+          <td style="padding: 10px;">—</td>
+          <td style="padding: 10px;">$1.00</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>Enclosure</strong></td>
+          <td style="padding: 10px;">Injection-molded ABS or PA66</td>
+          <td style="padding: 10px;">2 identical enclosure bodies + 2 lids (same mold). Threaded brass inserts for M1.2 screws.</td>
+          <td style="padding: 10px;">~15 x 16 x 5.5mm each</td>
+          <td style="padding: 10px;">$1.50</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #333;">
+          <td style="padding: 10px;"><strong>Conformal Coating</strong></td>
+          <td style="padding: 10px;">Acrylic or silicone spray</td>
+          <td style="padding: 10px;">Applied to exposed PCB strip between blocks</td>
+          <td style="padding: 10px;">—</td>
+          <td style="padding: 10px;">$0.10</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <h3>BOM Summary Per Sensor</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px; text-align: center;">
+      <p style="color: #888; margin: 0;">Electronics</p>
+      <p style="font-size: 28px; color: #7c83ff; margin: 8px 0;">$12.30</p>
+      <p style="color: #888; font-size: 12px; margin: 0;">MCU + sensors + passives + supercap</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px; text-align: center;">
+      <p style="color: #888; margin: 0;">Mechanical</p>
+      <p style="font-size: 28px; color: #7c83ff; margin: 8px 0;">$3.35</p>
+      <p style="color: #888; font-size: 12px; margin: 0;">Enclosure + PCB + screws + O-rings + membrane</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px; text-align: center;">
+      <p style="color: #888; margin: 0;">Total Per Sensor</p>
+      <p style="font-size: 28px; color: #4ecdc4; margin: 8px 0;">~$15.65</p>
+      <p style="color: #888; font-size: 12px; margin: 0;">~$31.30 per pair (before assembly labor)</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Estimated Weight Per Sensor</h3>
+  <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px; font-size: 13px;">
+    <table style="width: 100%; border-collapse: collapse;">
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 6px; color: #888;">MDBT42Q module</td><td style="padding: 6px;">~0.5g</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 6px; color: #888;">Pressure sensor</td><td style="padding: 6px;">~0.3g</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 6px; color: #888;">Accelerometer + passives + supercap</td><td style="padding: 6px;">~0.5g</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 6px; color: #888;">CR1225 battery</td><td style="padding: 6px;">~0.9g</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 6px; color: #888;">PCB strip (FR4)</td><td style="padding: 6px;">~0.8g</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 6px; color: #888;">Enclosures (2x plastic + lids)</td><td style="padding: 6px;">~2.5g</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 6px; color: #888;">Screws (4x M1.2 stainless) + brass inserts</td><td style="padding: 6px;">~0.8g</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 6px; color: #888;">O-rings (2x silicone)</td><td style="padding: 6px;">~0.2g</td></tr>
+      <tr><td style="padding: 6px; color: #4ecdc4;"><strong>TOTAL</strong></td><td style="padding: 6px; color: #4ecdc4;"><strong>~6.5g</strong></td></tr>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,155 @@
+<h2>Design Section 3: Firmware Architecture</h2>
+<p class="subtitle">nRF52832 firmware running on the Raytac MDBT42Q module — Nordic nRF5 SDK + SoftDevice</p>
+
+<div class="section">
+  <h3>Software Stack</h3>
+  <div style="background: #0d1117; border: 1px solid #333; border-radius: 8px; padding: 20px; font-family: monospace; font-size: 13px;">
+    <pre style="color: #e6edf3; margin: 0;">
+┌─────────────────────────────────────────────────┐
+│              APPLICATION LAYER                   │
+│                                                  │
+│  ┌──────────┐ ┌──────────┐ ┌──────────────────┐ │
+│  │ Pressure │ │ Motion   │ │ Alert Engine     │ │
+│  │ Manager  │ │ Manager  │ │ (temp-compensated│ │
+│  │          │ │          │ │  flat detection)  │ │
+│  └────┬─────┘ └────┬─────┘ └────────┬─────────┘ │
+│       │            │                │            │
+│  ┌────┴────────────┴────────────────┴─────────┐  │
+│  │           State Machine                     │  │
+│  │   DEEP_SLEEP → WAKING → ACTIVE → SLEEPING  │  │
+│  └────────────────────┬────────────────────────┘  │
+│                       │                           │
+├───────────────────────┼───────────────────────────┤
+│              PROTOCOL LAYER                       │
+│                       │                           │
+│  ┌────────────┐  ┌────┴───────┐  ┌─────────────┐ │
+│  │ ANT+ Tire  │  │ BLE GATT   │  │ BLE DFU     │ │
+│  │ Pressure   │  │ Custom     │  │ (Nordic OTA │ │
+│  │ Profile    │  │ Service    │  │  bootloader)│ │
+│  │ (broadcast)│  │ (config +  │  │             │ │
+│  │            │  │  broadcast)│  │             │ │
+│  └────────────┘  └────────────┘  └─────────────┘ │
+│                                                   │
+├───────────────────────────────────────────────────┤
+│              DRIVER LAYER                         │
+│                                                   │
+│  ┌──────────┐ ┌──────────┐ ┌──────────────────┐  │
+│  │ ABP I2C  │ │ LIS2DH12 │ │ NVS (Non-Vol     │  │
+│  │ Pressure │ │ Accel    │ │  Storage for      │  │
+│  │ + Temp   │ │ + Wake   │ │  config/pairing) │  │
+│  │ Driver   │ │ IRQ      │ │                   │  │
+│  └──────────┘ └──────────┘ └──────────────────┘  │
+│                                                   │
+├───────────────────────────────────────────────────┤
+│         NORDIC SOFTDEVICE S332                    │
+│         (BLE + ANT+ concurrent protocol stack)    │
+├───────────────────────────────────────────────────┤
+│         nRF52832 HARDWARE                         │
+│         (ARM Cortex-M4F, I2C, SPI, GPIO, RTC)    │
+└───────────────────────────────────────────────────┘
+    </pre>
+  </div>
+</div>
+
+<div class="section">
+  <h3>State Machine</h3>
+  <div style="background: #0d1117; border: 1px solid #333; border-radius: 8px; padding: 20px; font-family: monospace; font-size: 13px;">
+    <pre style="color: #e6edf3; margin: 0;">
+                    ┌─────────────┐
+          Power on  │  DEEP_SLEEP │ ◄──── 5 min no motion
+          or no     │  ~3µA total │ ────► accelerometer IRQ
+          motion    │             │       triggers wake
+                    └──────┬──────┘
+                           │ motion detected
+                           ▼
+                    ┌─────────────┐
+                    │   WAKING    │  Read pressure + temp
+                    │             │  Initialize radio
+                    │             │  ~2ms
+                    └──────┬──────┘
+                           │
+                           ▼
+                    ┌─────────────┐
+          ┌───────► │   ACTIVE    │ ◄─── accelerometer still
+          │         │             │      detecting motion
+          │         │  Every 3s:  │
+          │         │  - Read P+T │
+          │         │  - TX ANT+  │
+          │         │  - TX BLE   │
+          │         │  - Check    │
+          │         │    alerts   │
+          │         └──────┬──────┘
+          │                │
+          │  TX cycle       │ no motion for 5 min
+          │  (3s timer)    │
+          └────────────────│
+                           ▼
+                    ┌─────────────┐
+                    │  SLEEPING   │  Final pressure reading
+                    │             │  stored for next wake
+                    │             │  comparison
+                    └──────┬──────┘
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │  DEEP_SLEEP │
+                    └─────────────┘
+    </pre>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Key Firmware Features</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">ANT+ Tire Pressure Profile</h4>
+      <p style="font-size: 13px;">Broadcasts on the standard ANT+ Bicycle Tire Pressure device profile. Garmin, Wahoo, and other ANT+ head units see it natively. Includes pressure, temperature, and sensor location (front/rear).</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">BLE Custom GATT Service</h4>
+      <p style="font-size: 13px;">Custom service with characteristics for: pressure (notify), temperature (notify), battery level, sensor location, alert threshold, TX interval. Read/write for configuration via Web Bluetooth.</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">Temperature-Compensated Alerts</h4>
+      <p style="font-size: 13px;">Uses ideal gas law (P1/T1 = P2/T2) to calculate expected pressure at current temperature based on baseline reading. Only triggers flat alert when pressure drops beyond thermal explanation. Eliminates false alarms from weather changes.</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">OTA DFU (Over-The-Air Update)</h4>
+      <p style="font-size: 13px;">Nordic's secure DFU bootloader. Firmware updates via nRF Connect app (phone). Signed images prevent unauthorized firmware. User pulls tire, connects via BLE, pushes update.</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">Non-Volatile Config Storage</h4>
+      <p style="font-size: 13px;">Stores in nRF52 flash (FDS): sensor location (F/R), alert threshold PSI, TX interval, baseline pressure/temp for compensation, pairing keys. Persists across battery swaps.</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">Power Budget</h4>
+      <p style="font-size: 13px;">
+        Deep sleep: ~3µA (MCU + accel)<br>
+        Active TX cycle (3s): ~8mA for ~3ms = 24µAs per cycle<br>
+        Avg current (1hr ride): ~15µA<br>
+        <strong>Est. battery life: 2-3 years</strong> (1hr/day riding)
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Development Toolchain</h3>
+  <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px; font-size: 13px;">
+    <table style="width: 100%; border-collapse: collapse;">
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 8px; color: #888; width: 30%;">SDK</td><td style="padding: 8px;">Nordic nRF5 SDK 17.1 (or nRF Connect SDK / Zephyr RTOS)</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 8px; color: #888;">SoftDevice</td><td style="padding: 8px;">S332 (concurrent BLE + ANT+)</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 8px; color: #888;">IDE</td><td style="padding: 8px;">VS Code + nRF Connect extension (or Segger Embedded Studio)</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 8px; color: #888;">Compiler</td><td style="padding: 8px;">GCC ARM (arm-none-eabi-gcc)</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 8px; color: #888;">Debugger/Programmer</td><td style="padding: 8px;">Segger J-Link (or Nordic nRF52-DK as programmer)</td></tr>
+      <tr><td style="padding: 8px; color: #888;">Language</td><td style="padding: 8px;">C (Nordic SDK standard)</td></tr>
+    </table>
+  </div>
+</div>

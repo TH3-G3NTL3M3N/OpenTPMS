@@ -1,0 +1,104 @@
+<h2>Design Section 1: System Architecture</h2>
+<p class="subtitle">Overall architecture of the OpenTPMS bicycle tire pressure sensor</p>
+
+<div class="section">
+  <h3>System Block Diagram</h3>
+  <div style="background: #0d1117; border: 1px solid #333; border-radius: 8px; padding: 30px; font-family: monospace; font-size: 13px; line-height: 1.8; overflow-x: auto;">
+    <pre style="color: #e6edf3; margin: 0;">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        PCB STRIP (rigid FR4, 0.8mm)                    │
+│                                                                         │
+│  ┌──── BLOCK A (Electronics) ────┐  ┌ VALVE ┐  ┌── BLOCK B (Battery) ──┐│
+│  │                               │  │       │  │                        ││
+│  │  ┌─────────────────────┐      │  │   ○   │  │  ┌──────────────────┐  ││
+│  │  │   Raytac MDBT42Q    │      │  │   │   │  │  │    CR1225        │  ││
+│  │  │   (nRF52832 + BLE   │      │  │   │   │  │  │    Battery       │  ││
+│  │  │    + ANT+ + Antenna)│      │  │   │   │  │  │    in spring     │  ││
+│  │  └─────────────────────┘      │  │   │   │  │  │    clip holder   │  ││
+│  │                               │  │       │  │  └──────────────────┘  ││
+│  │  ┌──────────┐ ┌────────────┐  │  │       │  │                        ││
+│  │  │ LIS2DH12 │ │ Supercap   │  │  │       │  │  ┌──────────────────┐  ││
+│  │  │ Accel.   │ │ 47-100mF   │  │  │       │  │  │ Honeywell ABP    │  ││
+│  │  └──────────┘ └────────────┘  │  │       │  │  │ Pressure Sensor  │  ││
+│  │                               │  │       │  │  │ + ePTFE membrane │  ││
+│  │  ┌──────────┐                 │  │       │  │  └──────────────────┘  ││
+│  │  │ Passives │                 │  │       │  │                        ││
+│  │  │ (caps,   │                 │  │       │  │                        ││
+│  │  │  res)    │                 │  │       │  │                        ││
+│  │  └──────────┘                 │  │       │  │                        ││
+│  │                               │  │       │  │                        ││
+│  │  Plastic enclosure            │  │       │  │  Plastic enclosure     ││
+│  │  Screw-down lid + O-ring      │  │       │  │  Screw-down lid +     ││
+│  │  Air cavity (antenna needs    │  │       │  │  O-ring               ││
+│  │  free air)                    │  │       │  │  ePTFE in lid          ││
+│  │  NOT user-serviceable         │  │       │  │  USER-SERVICEABLE      ││
+│  └───────────────────────────────┘  └───────┘  └────────────────────────┘│
+│                                                                         │
+│  ◄──────── ~15mm ──────────►  ◄5mm►  ◄──────── ~15mm ──────────►        │
+│  ◄──────────────────── Total ~40mm ────────────────────────────►        │
+│                        Width: ≤16mm                                     │
+│                        Height: ≤5.5mm                                   │
+└─────────────────────────────────────────────────────────────────────────┘
+
+                    MOUNTS FLAT ON RIM BED
+                    ▼ Valve stem passes through center hole ▼
+                    ▼ Rim seal sits on top of PCB strip ▼
+    </pre>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Key Architecture Decisions</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">Two-Block Symmetric</h4>
+      <p style="font-size: 13px;">Electronics and battery separated by valve hole. Same injection mold for both enclosures. Battery's metal can kept away from antenna. Balanced weight on wheel.</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">Pre-Certified Module</h4>
+      <p style="font-size: 13px;">Raytac MDBT42Q handles nRF52832 + antenna + crystal + matching network. FCC/CE/IC pre-certified. Our PCB is a simple 2-layer carrier board.</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">Replaceable CR1225</h4>
+      <p style="font-size: 13px;">48mAh coin cell in spring-clip holder. User swaps during sealant refresh (every 1-2 years). Screw-down lid + O-ring seal on battery block.</p>
+    </div>
+
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 16px;">
+      <h4 style="color: #7c83ff; margin-top: 0;">Supercap Cold Buffer</h4>
+      <p style="font-size: 13px;">47-100mF supercapacitor absorbs TX current bursts. Enables -30°C operation from a CR1225. Charges during sleep from trickle current.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Data Flow</h3>
+  <div style="background: #0d1117; border: 1px solid #333; border-radius: 8px; padding: 20px; font-family: monospace; font-size: 13px;">
+    <pre style="color: #e6edf3; margin: 0;">
+Wheel spins → Accelerometer detects motion → MCU wakes from deep sleep
+                                                      │
+                              ┌────────────────────────┤
+                              ▼                        ▼
+                     Read pressure sensor      Read temperature
+                              │                        │
+                              └──────────┬─────────────┘
+                                         │
+                              Temperature-compensated
+                              flat detection logic
+                                         │
+                              ┌──────────┼──────────┐
+                              ▼          ▼          ▼
+                         ANT+ TX     BLE TX    Alert if
+                        (every 2-4s) (every    pressure
+                                     2-4s)    drop detected
+                                         │
+                              MCU returns to deep sleep
+                              until next TX interval
+                                         │
+                     5 min no motion → full deep sleep (~3µA)
+    </pre>
+  </div>
+</div>
