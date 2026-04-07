@@ -117,7 +117,7 @@ Every competitor pots their sensor in epoxy, which seals it perfectly but also m
 - **435 PSI range.** Fat bikes to road bikes to whatever you're riding.
 - **Open source.** No vendor lock-in. No subscription. No proprietary app. You own it completely.
 
-> With every other cycling TPMS, you're trusting a black box. You don't know how it measures, you can't fix the firmware when it's wrong, and when the battery dies it goes in the trash. OpenTPMS is the sensor where you actually know what's going on inside. You can read the code, tweak the flat detection, or just enjoy knowing that your tire pressure sensor isn't phoning home to anyone. It's yours.
+**With every other cycling TPMS, you're trusting a black box.** You don't know how it measures, you can't fix the firmware when it's wrong, and when the battery dies it goes in the trash. OpenTPMS is the sensor where you actually know what's going on inside. You can read the code, tweak the flat detection, or just enjoy knowing that your tire pressure sensor isn't phoning home to anyone. **It's yours.**
 
 ### Cost breakdown (CAD, per sensor at volume)
 
