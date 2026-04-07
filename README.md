@@ -85,12 +85,12 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 | **Accuracy** | ±0.4-0.8% | ±2% | ±0.5% | ±2% |
 | **Max pressure** | 435 PSI | 150 PSI | 200 PSI | 125 PSI |
 | **Cold weather** | -30C | -12C | Not specified | Not specified |
-| **Wireless** | ANT+ AND BLE | ANT+ AND BLE | BLE only | ANT+ only |
-| **Garmin support** | Yes (Connect IQ) | Yes (AXS app) | Yes (BLE Datafield) | Yes (ANT+ app) |
+| **Wireless** | ANT+ AND BLE | ANT+ AND BLE | BLE only | BLE only |
+| **Garmin support** | Yes (Connect IQ) | Yes (AXS app) | Yes (BLE Datafield) | Yes (BLE Datafield) |
 | **Phone app** | Yes (Web BLE) | Yes (AXS app) | Yes (iOS/Android) | Yes (iOS/Android) |
-| **Wahoo support** | Yes (ANT+) | Yes | No native support | ANT+ only |
-| **Hammerhead Karoo** | Yes | Yes | Yes (sideload extension) | Not confirmed |
-| **OTA firmware updates** | Yes (Nordic DFU via BLE) | Yes (AXS app) | Not confirmed | No (ANT+ only) |
+| **Wahoo support** | Yes (ANT+) | Yes | No native support | No native support |
+| **Hammerhead Karoo** | Yes | Yes | Yes (sideload extension) | Yes (sideload extension) |
+| **OTA firmware updates** | Yes (Nordic DFU via BLE) | Yes (AXS app) | Not confirmed | Not confirmed |
 | **Temp-compensated alerts** | Yes | No | No | No |
 | **Flat detection** | Yes (<30s) | Yes (false positives reported) | Yes | Yes |
 | **Sealant resistance** | IP67 + ePTFE membrane | IPX7 | Aerospace epoxy potted | IP68 |
@@ -111,7 +111,7 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 - **OTA firmware updates** — Nordic secure DFU bootloader lets you flash new firmware over BLE through the tire. New features, better algorithms, bug fixes — all without opening the sensor. TL Mini (ANT+ only) physically cannot do OTA. Outrider TL Pro has no confirmed OTA capability.
 - **Cheapest** — ~$66 CAD/pair at batch of 50 vs $95-178 CAD for competitors
 - **Same accuracy as the best** — ±0.4-0.8% matches Outrider TL Pro's ±0.5%, and beats TyreWiz/TL Mini at ±2%
-- **Only sensor with ANT+ AND BLE** — TL Pro is BLE only, TL Mini is ANT+ only. Only TyreWiz and OpenTPMS do both.
+- **Only open-source sensor with ANT+ AND BLE** — both Outrider models are BLE only (no Wahoo support). Only TyreWiz and OpenTPMS support both protocols simultaneously.
 - **Temperature-compensated flat detection** — the only sensor that eliminates false alarms from weather changes
 - **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter. Others struggle below -10C.
 - **Pressure range** — 435 PSI covers every application including fat bikes and high-pressure road
