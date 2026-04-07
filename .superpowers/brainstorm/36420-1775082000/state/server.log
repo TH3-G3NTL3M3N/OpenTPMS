@@ -1,8 +1,0 @@
-{"type":"server-started","port":61560,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:61560","screen_dir":"/Users/simruelland/bike-tpms-project/.superpowers/brainstorm/36420-1775082000/content","state_dir":"/Users/simruelland/bike-tpms-project/.superpowers/brainstorm/36420-1775082000/state"}
-{"type":"screen-added","file":"/Users/simruelland/bike-tpms-project/.superpowers/brainstorm/36420-1775082000/content/design-architecture.html"}
-{"type":"screen-added","file":"/Users/simruelland/bike-tpms-project/.superpowers/brainstorm/36420-1775082000/content/design-bom.html"}
-{"type":"screen-added","file":"/Users/simruelland/bike-tpms-project/.superpowers/brainstorm/36420-1775082000/content/design-firmware.html"}
-{"type":"screen-added","file":"/Users/simruelland/bike-tpms-project/.superpowers/brainstorm/36420-1775082000/content/design-mechanical.html"}
-{"type":"screen-added","file":"/Users/simruelland/bike-tpms-project/.superpowers/brainstorm/36420-1775082000/content/design-protocols.html"}
-{"type":"screen-added","file":"/Users/simruelland/bike-tpms-project/.superpowers/brainstorm/36420-1775082000/content/design-testing.html"}
-{"type":"server-stopped","reason":"idle timeout"}
