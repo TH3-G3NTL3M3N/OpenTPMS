@@ -111,7 +111,7 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 - **OTA firmware updates** — Nordic secure DFU bootloader lets you flash new firmware over BLE through the tire. New features, better algorithms, bug fixes — all without opening the sensor. Neither Outrider model has confirmed OTA capability.
 - **Cheapest** — ~$66 CAD/pair vs $95-178 CAD for competitors
 - **Same accuracy as the best** — <1% matches Outrider TL Pro's ±0.5%, and beats TyreWiz/TL Mini at ±2%
-- **Only open-source sensor with ANT+ AND BLE** — both Outrider models are BLE only (no Wahoo support). Only TyreWiz and OpenTPMS support both protocols simultaneously.
+- **ANT+ AND BLE simultaneously** — connects to Garmin (ANT+) and phone (BLE) at the same time. Both Outrider models are BLE only — no Wahoo support, and can only connect to one device at a time. OpenTPMS and TyreWiz are the only sensors with dual protocol support.
 - **Temperature-compensated flat detection** — the only sensor that eliminates false alarms from weather changes
 - **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter. Others struggle below -10C.
 - **Pressure range** — 435 PSI covers every application including fat bikes and high-pressure road
