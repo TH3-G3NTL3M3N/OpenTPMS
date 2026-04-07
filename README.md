@@ -109,7 +109,7 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 ### Where OpenTPMS wins:
 - **Buy once, keep forever** — $66 CAD/pair, replaceable CR1225 battery (~$1 every 2-3 years), and OTA firmware updates via BLE mean the sensor improves over time without replacing hardware. Competitors: Outrider models are potted in epoxy — when the battery dies, the sensor is e-waste. You buy again.
 - **OTA firmware updates** — Nordic secure DFU bootloader lets you flash new firmware over BLE through the tire. New features, better algorithms, bug fixes — all without opening the sensor. Neither Outrider model has confirmed OTA capability.
-- **Cheapest** — ~$66 CAD/pair at batch of 50 vs $95-178 CAD for competitors
+- **Cheapest** — ~$66 CAD/pair vs $95-178 CAD for competitors
 - **Same accuracy as the best** — <1% matches Outrider TL Pro's ±0.5%, and beats TyreWiz/TL Mini at ±2%
 - **Only open-source sensor with ANT+ AND BLE** — both Outrider models are BLE only (no Wahoo support). Only TyreWiz and OpenTPMS support both protocols simultaneously.
 - **Temperature-compensated flat detection** — the only sensor that eliminates false alarms from weather changes
