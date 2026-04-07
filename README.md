@@ -90,6 +90,7 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 | **Phone app** | Yes (Web BLE) | Yes (AXS app) | Yes (iOS/Android) | Yes (iOS/Android) |
 | **Wahoo support** | Yes (ANT+) | Yes | No native support | ANT+ only |
 | **Hammerhead Karoo** | Yes | Yes | Yes (sideload extension) | Not confirmed |
+| **OTA firmware updates** | Yes (Nordic DFU via BLE) | Yes (AXS app) | Not confirmed | No (ANT+ only) |
 | **Temp-compensated alerts** | Yes | No | No | No |
 | **Flat detection** | Yes (<30s) | Yes (false positives reported) | Yes | Yes |
 | **Sealant resistance** | IP67 + ePTFE membrane | IPX7 | Aerospace epoxy potted | IP68 |
@@ -106,13 +107,14 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 - **All competitors** — finished consumer products, no assembly required
 
 ### Where OpenTPMS wins:
+- **Buy once, keep forever** — $66 CAD/pair, replaceable CR1225 battery (~$1 every 2-3 years), and OTA firmware updates via BLE mean the sensor improves over time without replacing hardware. Competitors: Outrider models are potted in epoxy — when the battery dies, the sensor is e-waste. You buy again.
+- **OTA firmware updates** — Nordic secure DFU bootloader lets you flash new firmware over BLE through the tire. New features, better algorithms, bug fixes — all without opening the sensor. TL Mini (ANT+ only) physically cannot do OTA. Outrider TL Pro has no confirmed OTA capability.
 - **Cheapest** — ~$66 CAD/pair at batch of 50 vs $95-178 CAD for competitors
 - **Same accuracy as the best** — ±0.4-0.8% matches Outrider TL Pro's ±0.5%, and beats TyreWiz/TL Mini at ±2%
 - **Only sensor with ANT+ AND BLE** — TL Pro is BLE only, TL Mini is ANT+ only. Only TyreWiz and OpenTPMS do both.
 - **Temperature-compensated flat detection** — the only sensor that eliminates false alarms from weather changes
 - **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter. Others struggle below -10C.
 - **Pressure range** — 435 PSI covers every application including fat bikes and high-pressure road
-- **Replaceable battery** — both Outrider models are potted in epoxy (battery dies = sensor is e-waste). OpenTPMS battery swaps in 2 minutes during a sealant refresh.
 - **Open source** — inspect, modify, improve. No vendor lock-in. No subscription. No proprietary app required.
 
 ### Cost breakdown (CAD, batch of 50 sensors)
