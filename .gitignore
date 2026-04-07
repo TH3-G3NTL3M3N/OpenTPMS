@@ -1,0 +1,28 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Fusion 360 local files
+*.f3d
+*.f3z
+
+# Superpowers brainstorm artifacts
+.superpowers/brainstorm/
+
+# Python
+__pycache__/
+*.pyc
+tools/venv/
+
+# Garmin build output
+garmin/bin/
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+
+# Temporary
+*.tmp
+~$*
