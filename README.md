@@ -74,9 +74,11 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 
 ## Comparison vs Commercial TPMS Sensors
 
+*All prices in CAD. Competitor USD prices converted at 1 USD ≈ 1.37 CAD.*
+
 | Feature | **OpenTPMS (v1)** | **SRAM TyreWiz 2.0** | **Outrider TL Pro** | **Outrider TL Mini** |
 |---------|:---------:|:----------:|:----------:|:----------:|
-| **Price (pair)** | ~$88 | $120-130 | $89 | $55-69 |
+| **Price (pair, CAD)** | ~$66 (batch of 50) | ~$178 | ~$122 | ~$95 |
 | **Weight** | ~6.5g | 10g | 6.9g | 3.7g |
 | **Battery life** | 2-3 years | 200-300 hrs | 5+ years | 2,000 hrs |
 | **Battery** | CR1225 replaceable | CR1632 replaceable | Potted (not replaceable) | Potted (not replaceable) |
@@ -97,19 +99,33 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 | **Tire inserts** | Compatible (verify CushCore) | Compatible | Tight fit | Better fit |
 | **PCB width** | 19mm (v1) | N/A | 12mm | 19/21/30mm (3 sizes) |
 
-### Where OpenTPMS wins:
-- **Only sensor with ANT+ AND BLE** — TL Pro is BLE only, TL Mini is ANT+ only, only TyreWiz and OpenTPMS do both
-- **Temperature-compensated flat detection** — only sensor that eliminates false alarms from weather changes
-- **Cold weather operation** — -30C with ceramic buffer cap, others struggle below -10C
-- **Pressure range** — 435 PSI covers every application including fat bikes and road at high pressure
-- **Replaceable battery** — both Outrider models are potted in epoxy (battery dies = sensor is trash). OpenTPMS battery swaps in 2 minutes.
-- **Open source** — inspect, modify, improve. No vendor lock-in.
-
 ### Where competitors win:
-- **Outrider TL Mini** — lighter (3.7g vs 6.5g), smaller, narrower rim compatibility (19mm+), cheapest ($55/pair)
-- **Outrider TL Pro** — better accuracy claim (±0.5%), longest battery (5+ years), lightest full-featured sensor (6.9g), narrowest PCB (12mm)
+- **Outrider TL Mini** — lighter (3.7g vs 6.5g), smaller, narrower rim compatibility (19mm+)
+- **Outrider TL Pro** — longest battery life (5+ years), lightest full-featured sensor (6.9g), narrowest PCB (12mm)
 - **TyreWiz 2.0** — polished SRAM AXS app ecosystem, NFC pairing, LED indicator, widest device compatibility
 - **All competitors** — finished consumer products, no assembly required
+
+### Where OpenTPMS wins:
+- **Cheapest** — ~$66 CAD/pair at batch of 50 vs $95-178 CAD for competitors
+- **Same accuracy as the best** — ±0.4-0.8% matches Outrider TL Pro's ±0.5%, and beats TyreWiz/TL Mini at ±2%
+- **Only sensor with ANT+ AND BLE** — TL Pro is BLE only, TL Mini is ANT+ only. Only TyreWiz and OpenTPMS do both.
+- **Temperature-compensated flat detection** — the only sensor that eliminates false alarms from weather changes
+- **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter. Others struggle below -10C.
+- **Pressure range** — 435 PSI covers every application including fat bikes and high-pressure road
+- **Replaceable battery** — both Outrider models are potted in epoxy (battery dies = sensor is e-waste). OpenTPMS battery swaps in 2 minutes during a sealant refresh.
+- **Open source** — inspect, modify, improve. No vendor lock-in. No subscription. No proprietary app required.
+
+### Cost breakdown (CAD, batch of 50 sensors)
+
+| Category | Per sensor | Per pair |
+|----------|-----------|---------|
+| Electronics (MCU, sensors, passives) | $27.65 | $55.30 |
+| Mechanical (battery, screws, O-rings, enclosure) | $2.35 | $4.70 |
+| PCB (JLCPCB volume pricing) | $1.50 | $3.00 |
+| Consumables (coating, RTV, Loctite, grease) | $1.57 | $3.14 |
+| **Total** | **~$33** | **~$66** |
+
+*Dev tools (nRF52-DK $52.77 + PPK2 $133.20 = $186 one-time) not included in per-unit cost.*
 
 ## Project Status
 
