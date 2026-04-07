@@ -45,7 +45,7 @@ Two-block symmetric design. PCB strip spans across the rim width (~40mm) with th
 ### Dimensions
 
 - **Total length:** ~42mm (across rim, along circumference)
-- **Width:** ≤16mm (fits 19mm+ internal width rims)
+- **Width:** ~19mm (v1 prototype — widened from 16mm target for routing clearance around MDBT42Q in Block A. Fits 21mm+ internal width rims, covering all MTB/gravel and most road tubeless. v2 target: optimize to 16mm.)
 - **Height Block A:** ~5.2mm (lid surface), ~6.6mm (incl. screw heads into tire cavity)
 - **Height Block B:** ~5.5mm (lid surface), ~6.9mm (incl. screw heads into tire cavity)
 - **Weight:** ~6.5g per sensor
@@ -98,7 +98,7 @@ The sensor measures **absolute pressure** (relative to vacuum). Conversion to ga
 | DC-DC Inductor | 10µH 0402/0603 | Between MDBT42Q VDD (pin 11) and DCC (pin 10). Enables internal buck converter — reduces radio TX current ~30% (7.5mA → 5.3mA). | 0402 or 0603 | $0.05 |
 | Passives | Various 0402 caps, resistors | 3x 100nF decoupling, 2x 4.7kΩ I2C pull-ups, 2x 150pF NFC tuning caps = 7 passive components | 0402 | $0.35 |
 | NFC Antenna | PCB trace loop | ~10x15mm rectangular copper trace on bottom layer, connected to MDBT42Q NFC1/NFC2 pins. No component — just a routed trace. Ground pour gap required under antenna. | PCB trace | $0.00 |
-| PCB | 2-layer FR4, 0.8mm, ENIG finish | ~16 x 42mm strip with valve hole, conformal coated | — | $1.00 |
+| PCB | 2-layer FR4, 0.8mm, ENIG finish | ~19 x 42mm strip with valve hole, conformal coated (v1; v2 target 16mm wide) | — | $1.00 |
 | Enclosure | 3D printed ABS (FDM), frame-on-PCB | 2 frames + 2 lids, brass heat-set M1.4 inserts, ~5.5mm boss dia at screw locations | ~15 x 16mm each | $2.50 |
 | Conformal Coating | Silicone spray | Applied to exposed PCB strip between blocks | — | $0.10 |
 

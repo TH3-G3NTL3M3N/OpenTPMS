@@ -40,7 +40,7 @@ Temperature-compensated flat detection uses the ideal gas law (P1/T1 = P2/T2) to
 
 - **Block A:** Raytac MDBT42Q (nRF52832), LIS2DH12 accelerometer, passives
 - **Block B:** MS5837-30BA pressure sensor, CR1225 battery on PCB contact pad
-- **PCB:** 2-layer FR4, 16mm x 42mm, 0.8mm thick, ENIG finish
+- **PCB:** 2-layer FR4, 19mm x 42mm (v1), 0.8mm thick, ENIG finish
 - **Enclosure:** 3D printed ABS, frame-on-PCB construction, O-ring sealed
 
 ## Specifications
@@ -52,10 +52,10 @@ Temperature-compensated flat detection uses the ideal gas law (P1/T1 = P2/T2) to
 | Operating temp | -30C to +60C |
 | Battery | CR1225, replaceable, 2-3 year life |
 | Weight | ~6.5g per sensor |
-| Dimensions | 16mm x 42mm x 5.5mm (lid), 6.9mm (with screws) |
+| Dimensions (v1) | 19mm x 42mm x 5.5mm (lid), 6.9mm (with screws) |
 | Wireless | BLE 5.0 + ANT+ (concurrent) |
 | Flat detection | Temperature-compensated, <30s detection |
-| Rim compatibility | 19mm+ internal width (all modern tubeless) |
+| Rim compatibility | 21mm+ internal width (all MTB, gravel, most road tubeless) |
 
 ## Comparison vs SRAM TyreWiz 2.0
 
@@ -136,7 +136,7 @@ OpenTPMS/
 | Loctite 222 threadlocker | Amazon |
 
 ### PCB
-- 2-layer, 0.8mm FR4, ENIG, 16mm x 42mm
+- 2-layer, 0.8mm FR4, ENIG, 19mm x 42mm (v1)
 - Fabrication: **PCBWay** (sponsored)
 
 ## Building
