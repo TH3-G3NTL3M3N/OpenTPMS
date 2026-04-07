@@ -1,10 +1,10 @@
-# OpenTPMS — Open-Source Bicycle Tire Pressure Monitoring Sensor
+# OpenTPMS: Open-Source Bicycle Tire Pressure Monitoring Sensor
 
-> **Work in Progress** — This project is currently in the PCB fabrication and component sourcing phase. Firmware, enclosure, and assembly are next. Installation video and build guide will follow once the first prototype is up and running.
+> **Work in Progress.** PCB is designed and heading to fab. Firmware, enclosure, and assembly are next. Install video and build guide coming once the first prototype is riding.
 
-An open-source, in-tire TPMS sensor for tubeless bicycles with replaceable CR1225 battery, dual ANT+/BLE wireless, and temperature-compensated flat detection.
+An open-source, in-tire TPMS sensor for tubeless bicycles. Replaceable CR1225 battery, dual ANT+/BLE wireless, temperature-compensated flat detection.
 
-**Sponsored by [PCBWay](https://www.pcbway.com) — PCB Prototype the Easy Way**
+**Sponsored by [PCBWay](https://www.pcbway.com)**
 
 **Contact:** simon@ruelland.com
 
@@ -12,33 +12,33 @@ An open-source, in-tire TPMS sensor for tubeless bicycles with replaceable CR122
 
 ## Key Features
 
-- **Replaceable battery** — CR1225 coin cell, 2-3 year life at 1hr/day riding
-- **Dual ANT+ and BLE** — native Garmin/Wahoo support AND phone connectivity
-- **Factory-calibrated accuracy** — <1% at 20 PSI, matching the best commercial sensors
-- **Temperature-compensated flat alerts** — eliminates false alarms from weather changes
-- **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter
-- **Universal fit** — 19mm wide PCB (v1) fits 21mm+ internal width rims (all MTB, gravel, most road tubeless)
-- **Open-source** — CC BY-NC-SA 4.0 (non-commercial sharing allowed)
-- **Lightweight** — ~6.5g per sensor
+- **Replaceable battery** that lasts 2-3 years on a CR1225 coin cell
+- **Dual ANT+ and BLE** for native Garmin/Wahoo support and phone connectivity
+- **Factory-calibrated accuracy** under 1% at 20 PSI, matching the best commercial sensors
+- **Temperature-compensated flat alerts** that actually work (no false alarms from weather changes)
+- **Cold weather operation** down to -30C with ceramic buffer cap and DC-DC converter
+- **Universal fit** at 19mm wide (v1), fits 21mm+ internal width rims (all MTB, gravel, most road tubeless)
+- **Open source** under CC BY-NC-SA 4.0
+- **Lightweight** at ~6.5g per sensor
 
 ## How It Works
 
-The sensor mounts on the rim bed inside a tubeless tire, around the valve stem. It measures absolute pressure using a factory-calibrated TE MS5837-30BA sensor and transmits via ANT+ and BLE every 3 seconds. A Garmin Connect IQ data field or phone app reads the device's barometer and subtracts atmospheric pressure to display gauge PSI in real-time.
+The sensor mounts on the rim bed inside a tubeless tire, around the valve stem. It measures absolute pressure using a factory-calibrated TE MS5837-30BA sensor and transmits via ANT+ and BLE every 3 seconds. A Garmin Connect IQ data field or phone app reads the device's barometer and subtracts atmospheric pressure to display gauge PSI in real time.
 
-Temperature-compensated flat detection uses the ideal gas law (P1/T1 = P2/T2) to distinguish actual leaks from temperature-induced pressure changes — no false alerts riding from shade to sun.
+Flat detection uses the ideal gas law (P1/T1 = P2/T2) to tell the difference between an actual leak and temperature swings. Riding from shade into sun changes your pressure by ~1 PSI, and every other sensor on the market will warn you about it. OpenTPMS won't.
 
-### Sealing Design — Replaceable Battery in a Harsh Environment
+### Sealing Design: Replaceable Battery in a Harsh Environment
 
-Unlike competitors that pot their sensors in epoxy (making the battery permanently sealed), OpenTPMS uses a **multi-layer serviceable enclosure** that protects against sealant, moisture, and vibration while keeping the CR1225 battery user-replaceable:
+Every competitor pots their sensor in epoxy, which seals it perfectly but also means the battery is permanent. When it dies, the whole sensor is trash. We took a different approach: a multi-layer serviceable enclosure that handles sealant, moisture, and vibration while keeping the battery swappable.
 
-1. **ABS frame** bonded to PCB with **Permatex RTV silicone** — permanent, flexible, vibration-resistant seal
-2. **Silicone O-ring** (12mm, 1mm cross-section) in a groove between frame and lid — compressed 25% when lid is screwed down
-3. **M1.4 DIN912 Allen screws** into brass heat-set inserts with **Loctite 222** threadlocker — removable but secure
-4. **ePTFE membrane** over the pressure port — lets air through for pressure readings while blocking liquid sealant
-5. **Silicone conformal coating** (MG Chemicals 422C) on exposed PCB areas between enclosure blocks
-6. **Silicone grease** dabbed in screw hex sockets — prevents sealant from curing inside the screw heads
+1. **ABS frame** bonded to PCB with **Permatex RTV silicone** for a permanent, flexible, vibration-resistant seal
+2. **Silicone O-ring** (12mm, 1mm cross-section) compressed 25% between frame and lid
+3. **M1.4 DIN912 Allen screws** into brass heat-set inserts with **Loctite 222** threadlocker (removable but secure)
+4. **ePTFE membrane** over the pressure port: air passes through, liquid sealant doesn't
+5. **Silicone conformal coating** (MG Chemicals 422C) on exposed PCB areas between blocks
+6. **Silicone grease** in the screw hex sockets to keep sealant from curing inside
 
-**Battery swap:** Unscrew 2 Allen screws, lift lid, swap CR1225, replace lid. ~2 minutes during a sealant refresh every 1-2 years.
+**Battery swap:** Unscrew 2 Allen screws, lift lid, swap CR1225, replace lid. About 2 minutes during a sealant refresh.
 
 ## Architecture
 
@@ -69,7 +69,7 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 | Weight | ~6.5g per sensor |
 | Dimensions (v1) | 19mm x 42mm x 5.5mm (lid), 6.9mm (with screws) |
 | Wireless | BLE 5.0 + ANT+ (concurrent) |
-| Flat detection | Temperature-compensated, <30s detection |
+| Flat detection | Temperature-compensated, under 30s detection |
 | Rim compatibility | 21mm+ internal width (all MTB, gravel, most road tubeless) |
 
 ## Comparison vs Commercial TPMS Sensors
@@ -92,7 +92,7 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 | **Hammerhead Karoo** | Yes | Yes | Yes (sideload extension) | Yes (sideload extension) |
 | **OTA firmware updates** | Yes (Nordic DFU via BLE) | Yes (AXS app) | Not confirmed | Not confirmed |
 | **Temp-compensated alerts** | Yes | No | No | No |
-| **Flat detection** | Yes (<30s) | Yes (false positives reported) | Yes | Yes |
+| **Flat detection** | Yes (under 30s) | Yes (false positives reported) | Yes | Yes |
 | **Sealant resistance** | IP67 + ePTFE membrane | IPX7 | Aerospace epoxy potted | IP68 |
 | **Open source** | Yes (CC BY-NC-SA) | No | No | No |
 | **NFC pairing** | Hardware ready (v2 firmware) | Yes | No | No |
@@ -101,25 +101,25 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 | **PCB width** | 19mm (v1) | N/A | 12mm | 19/21/30mm (3 sizes) |
 
 ### Where competitors win:
-- **Outrider TL Mini** — lighter (3.7g vs 6.5g), smaller, narrower rim compatibility (19mm+)
-- **Outrider TL Pro** — longest battery life (5+ years), lightest full-featured sensor (6.9g), narrowest PCB (12mm)
-- **TyreWiz 2.0** — polished SRAM AXS app ecosystem, NFC pairing, LED indicator, widest device compatibility
-- **All competitors** — finished consumer products, no assembly required
+- **Outrider TL Mini** is lighter (3.7g vs 6.5g), smaller, and fits narrower rims (19mm+)
+- **Outrider TL Pro** has the longest battery (5+ years), lightest full-featured build (6.9g), and narrowest PCB (12mm)
+- **TyreWiz 2.0** has a polished app ecosystem, NFC pairing, LED indicator, and the widest device compatibility
+- **All of them** are finished consumer products you can just buy and install
 
 ### Where OpenTPMS wins:
-- **Buy once, keep forever** — $66 CAD/pair, replaceable CR1225 battery (~$1 every 2-3 years), and OTA firmware updates via BLE mean the sensor improves over time without replacing hardware. Competitors: Outrider models are potted in epoxy — when the battery dies, the sensor is e-waste. You buy again.
-- **OTA firmware updates** — Nordic secure DFU bootloader lets you flash new firmware over BLE through the tire. New features, better algorithms, bug fixes — all without opening the sensor. Neither Outrider model has confirmed OTA capability.
-- **Cheapest** — ~$66 CAD/pair vs $95-178 CAD for competitors
-- **Same accuracy as the best** — <1% matches Outrider TL Pro's ±0.5%, and beats TyreWiz/TL Mini at ±2%
-- **ANT+ AND BLE simultaneously** — connects to Garmin (ANT+) and phone (BLE) at the same time. Both Outrider models are BLE only — no Wahoo support, and can only connect to one device at a time. OpenTPMS and TyreWiz are the only sensors with dual protocol support.
-- **Temperature-compensated flat detection** — the only sensor that eliminates false alarms from weather changes
-- **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter. Others struggle below -10C.
-- **Pressure range** — 435 PSI covers every application including fat bikes and high-pressure road
-- **Open source** — inspect, modify, improve. No vendor lock-in. No subscription. No proprietary app required.
+- **Buy once, keep forever.** $66 CAD/pair. Replace a $1 battery every 2-3 years. OTA firmware updates over BLE keep making it better without swapping hardware. Competitors pot their sensors in epoxy, so when the battery dies, that's it. You buy another one.
+- **OTA firmware updates.** Nordic's secure DFU bootloader lets you flash new firmware over BLE right through the tire. New features, better algorithms, bug fixes, all without cracking it open. Neither Outrider model has confirmed OTA capability.
+- **Cheapest.** ~$66 CAD/pair vs $95-178 CAD for everything else on the market.
+- **Accuracy that matches the best.** Under 1% matches the Outrider TL Pro's ±0.5%, and beats TyreWiz and TL Mini at ±2%.
+- **ANT+ and BLE at the same time.** Garmin reads ANT+, phone reads BLE, both simultaneously. Both Outrider models are BLE only (no Wahoo, one device at a time). Only TyreWiz and OpenTPMS do dual protocol.
+- **Temperature-compensated flat detection.** The only sensor that won't freak out when you ride from shade into sun.
+- **Works in the cold.** -30C with a ceramic buffer cap and DC-DC converter. Other sensors start struggling around -10C.
+- **435 PSI range.** Fat bikes to road bikes to whatever you're riding.
+- **Open source.** No vendor lock-in. No subscription. No proprietary app. You own it completely.
 
-> Every other cycling TPMS is a black box — you trust the manufacturer's firmware, accept their limitations, and throw it away when the battery dies. OpenTPMS is the first sensor where you know exactly what's measuring your pressure, how the flat detection algorithm works, and can fix or improve it yourself. Your sensor, your data, your rules.
+> With every other cycling TPMS, you're trusting a black box. You don't know how it measures, you can't fix the firmware when it's wrong, and when the battery dies it goes in the trash. OpenTPMS is the sensor where you actually know what's going on inside. You can read the code, tweak the flat detection, or just enjoy knowing that your tire pressure sensor isn't phoning home to anyone. It's yours.
 
-### Cost breakdown (CAD, batch of 50 sensors)
+### Cost breakdown (CAD, per sensor at volume)
 
 | Category | Per sensor | Per pair |
 |----------|-----------|---------|
@@ -161,6 +161,7 @@ OpenTPMS/
 │   └── fusion360-schematic-guide.md
 ├── hardware/
 │   ├── gerbers/              # Manufacturing files (Gerber + drill)
+│   ├── enclosure/            # 3D print STL/STEP files
 │   └── fusion360/            # Fusion 360 project files
 ├── firmware/
 │   ├── src/                  # C source (nRF5 SDK)
@@ -181,7 +182,7 @@ OpenTPMS/
 | Accelerometer | ST LIS2DH12TR | Mouser |
 | TX Buffer Cap | Murata GRM31CR60J227ME11L (220uF 1206) | DigiKey |
 | DC-DC Inductor | 10uH 0402 | DigiKey |
-| Battery Contact | Custom PCB pad + lid spring | — |
+| Battery Contact | Custom PCB pad + lid spring | N/A |
 | Passives | 100nF, 150pF, 4.7k, 100ohm (0402) | DigiKey/Mouser |
 
 ### Mechanical
@@ -223,11 +224,11 @@ OpenTPMS/
 11. Insert CR1225 battery, place O-rings, screw down lids with Loctite 222
 12. Install in tire on valve stem
 
-> **Installation video and detailed build guide will be published once the first prototype is assembled and field-tested.**
+> **Installation video and detailed build guide coming once the first prototype is assembled and field-tested.**
 
 ## License
 
-**CC BY-NC-SA 4.0** — Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+**CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International)
 
 You can share, modify, and build upon this project for **non-commercial purposes only**, with attribution and under the same license. Commercial use requires permission from the author.
 
@@ -235,7 +236,7 @@ For commercial licensing inquiries: simon@ruelland.com
 
 ## Acknowledgments
 
-- **PCBWay** — PCB fabrication sponsorship
+- **PCBWay** for PCB fabrication sponsorship
 - Built with Nordic nRF52832 via Raytac MDBT42Q module
 - Designed in Autodesk Fusion 360
 
