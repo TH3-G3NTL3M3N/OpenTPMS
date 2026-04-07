@@ -1,10 +1,12 @@
 # OpenTPMS — Open-Source Bicycle Tire Pressure Monitoring Sensor
 
+> **Work in Progress** — This project is currently in the PCB fabrication and component sourcing phase. Firmware, enclosure, and assembly are next. Installation video and build guide will follow once the first prototype is up and running.
+
 An open-source, in-tire TPMS sensor for tubeless bicycles with replaceable CR1225 battery, dual ANT+/BLE wireless, and temperature-compensated flat detection.
 
 **Sponsored by [PCBWay](https://www.pcbway.com) — PCB Prototype the Easy Way**
 
-![PCBWay Logo](https://www.pcbway.com/project/img/logo.png)
+**Contact:** simon@ruelland.com
 
 ---
 
@@ -15,7 +17,7 @@ An open-source, in-tire TPMS sensor for tubeless bicycles with replaceable CR122
 - **Factory-calibrated accuracy** — within 1% at 20 PSI (vs 2% for commercial alternatives)
 - **Temperature-compensated flat alerts** — eliminates false alarms from weather changes
 - **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter
-- **Universal fit** — 16mm wide PCB fits 19mm+ internal width rims (all modern tubeless)
+- **Universal fit** — 19mm wide PCB (v1) fits 21mm+ internal width rims (all MTB, gravel, most road tubeless)
 - **Open-source** — CC BY-NC-SA 4.0 (non-commercial sharing allowed)
 - **Lightweight** — ~6.5g per sensor
 
@@ -24,6 +26,19 @@ An open-source, in-tire TPMS sensor for tubeless bicycles with replaceable CR122
 The sensor mounts on the rim bed inside a tubeless tire, around the valve stem. It measures absolute pressure using a factory-calibrated TE MS5837-30BA sensor and transmits via ANT+ and BLE every 3 seconds. A Garmin Connect IQ data field or phone app reads the device's barometer and subtracts atmospheric pressure to display gauge PSI in real-time.
 
 Temperature-compensated flat detection uses the ideal gas law (P1/T1 = P2/T2) to distinguish actual leaks from temperature-induced pressure changes — no false alerts riding from shade to sun.
+
+### Sealing Design — Replaceable Battery in a Harsh Environment
+
+Unlike competitors that pot their sensors in epoxy (making the battery permanently sealed), OpenTPMS uses a **multi-layer serviceable enclosure** that protects against sealant, moisture, and vibration while keeping the CR1225 battery user-replaceable:
+
+1. **ABS frame** bonded to PCB with **Permatex RTV silicone** — permanent, flexible, vibration-resistant seal
+2. **Silicone O-ring** (12mm, 1mm cross-section) in a groove between frame and lid — compressed 25% when lid is screwed down
+3. **M1.4 DIN912 Allen screws** into brass heat-set inserts with **Loctite 222** threadlocker — removable but secure
+4. **ePTFE membrane** over the pressure port — lets air through for pressure readings while blocking liquid sealant
+5. **Silicone conformal coating** (MG Chemicals 422C) on exposed PCB areas between enclosure blocks
+6. **Silicone grease** dabbed in screw hex sockets — prevents sealant from curing inside the screw heads
+
+**Battery swap:** Unscrew 2 Allen screws, lift lid, swap CR1225, replace lid. ~2 minutes during a sealant refresh every 1-2 years.
 
 ## Architecture
 
@@ -64,7 +79,7 @@ Temperature-compensated flat detection uses the ideal gas law (P1/T1 = P2/T2) to
 | **Price (pair)** | ~$88 | $120-130 | $89 | $55-69 |
 | **Weight** | ~6.5g | 10g | 6.9g | 3.7g |
 | **Battery life** | 2-3 years | 200-300 hrs | 5+ years | 2,000 hrs |
-| **Battery** | CR1225 replaceable | CR1632 replaceable | Potted (not replaceable) | Replaceable |
+| **Battery** | CR1225 replaceable | CR1632 replaceable | Potted (not replaceable) | Potted (not replaceable) |
 | **Accuracy** | ±0.4-0.8% | ±2% | ±0.5% | ±2% |
 | **Max pressure** | 435 PSI | 150 PSI | 200 PSI | 125 PSI |
 | **Cold weather** | -30C | -12C | Not specified | Not specified |
@@ -87,7 +102,7 @@ Temperature-compensated flat detection uses the ideal gas law (P1/T1 = P2/T2) to
 - **Temperature-compensated flat detection** — only sensor that eliminates false alarms from weather changes
 - **Cold weather operation** — -30C with ceramic buffer cap, others struggle below -10C
 - **Pressure range** — 435 PSI covers every application including fat bikes and road at high pressure
-- **Replaceable battery** — TL Pro is potted forever
+- **Replaceable battery** — both Outrider models are potted in epoxy (battery dies = sensor is trash). OpenTPMS battery swaps in 2 minutes.
 - **Open source** — inspect, modify, improve. No vendor lock-in.
 
 ### Where competitors win:
@@ -117,8 +132,7 @@ Temperature-compensated flat detection uses the ideal gas law (P1/T1 = P2/T2) to
 ```
 OpenTPMS/
 ├── README.md
-├── LICENSE-HARDWARE          # CERN OHL v2
-├── LICENSE-SOFTWARE          # MIT
+├── LICENSE                   # CC BY-NC-SA 4.0
 ├── docs/
 │   ├── design-spec.md        # Full design specification
 │   ├── implementation-plan.md # Build plan with task tracking
@@ -178,12 +192,18 @@ OpenTPMS/
 ### Assembly
 1. Order PCBs from Gerber files in `hardware/gerbers/`
 2. Order components per BOM
-3. Solder SMD components with solder paste + hot air or iron
-4. Flash firmware via SWD test pads
-5. 3D print ABS enclosure
-6. Assemble with RTV silicone, O-rings, M1.4 screws
-7. Factory calibrate pressure sensor
-8. Install in tire
+3. Solder SMD components with solder paste + iron (Pinecil V2)
+4. Apply conformal coating on exposed PCB strip between blocks
+5. Flash firmware via SWD test pads (using nRF52-DK)
+6. 3D print ABS enclosure (frames + lids), acetone vapor smooth O-ring surfaces
+7. Press M1.4 brass heat-set inserts into frame bosses
+8. Bond frames to PCB with RTV silicone, cure 24 hours
+9. Bond ePTFE membrane over pressure port in Block B lid
+10. Factory calibrate pressure sensor (3-5 known pressures, write correction polynomial)
+11. Insert CR1225 battery, place O-rings, screw down lids with Loctite 222
+12. Install in tire on valve stem
+
+> **Installation video and detailed build guide will be published once the first prototype is assembled and field-tested.**
 
 ## License
 
@@ -191,7 +211,7 @@ OpenTPMS/
 
 You can share, modify, and build upon this project for **non-commercial purposes only**, with attribution and under the same license. Commercial use requires permission from the author.
 
-For commercial licensing inquiries: sruelland@northislandcollege.ca
+For commercial licensing inquiries: simon@ruelland.com
 
 ## Acknowledgments
 
