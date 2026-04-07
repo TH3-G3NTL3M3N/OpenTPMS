@@ -14,7 +14,7 @@ An open-source, in-tire TPMS sensor for tubeless bicycles with replaceable CR122
 
 - **Replaceable battery** — CR1225 coin cell, 2-3 year life at 1hr/day riding
 - **Dual ANT+ and BLE** — native Garmin/Wahoo support AND phone connectivity
-- **Factory-calibrated accuracy** — within 1% at 20 PSI (vs 2% for commercial alternatives)
+- **Factory-calibrated accuracy** — <1% at 20 PSI, matching the best commercial sensors
 - **Temperature-compensated flat alerts** — eliminates false alarms from weather changes
 - **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter
 - **Universal fit** — 19mm wide PCB (v1) fits 21mm+ internal width rims (all MTB, gravel, most road tubeless)
@@ -62,7 +62,7 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 
 | Spec | Value |
 |------|-------|
-| Pressure accuracy | ±0.4-0.8% at 20 PSI (factory calibrated) |
+| Pressure accuracy | <1% at 20 PSI (factory calibrated) |
 | Pressure range | 0-435 PSI |
 | Operating temp | -30C to +60C |
 | Battery | CR1225, replaceable, 2-3 year life |
@@ -78,11 +78,11 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 
 | Feature | **OpenTPMS (v1)** | **SRAM TyreWiz 2.0** | **Outrider TL Pro** | **Outrider TL Mini** |
 |---------|:---------:|:----------:|:----------:|:----------:|
-| **Price (pair, CAD)** | ~$66 (batch of 50) | ~$178 | ~$122 | ~$95 |
+| **Price (pair, CAD)** | ~$66 | ~$178 | ~$122 | ~$95 |
 | **Weight** | ~6.5g | 10g | 6.9g | 3.7g |
 | **Battery life** | 2-3 years | 200-300 hrs | 5+ years | 2,000 hrs |
 | **Battery** | CR1225 replaceable | CR1632 replaceable | Potted (not replaceable) | Potted (not replaceable) |
-| **Accuracy** | ±0.4-0.8% | ±2% | ±0.5% | ±2% |
+| **Accuracy** | <1% | ±2% | ±0.5% | ±2% |
 | **Max pressure** | 435 PSI | 150 PSI | 200 PSI | 125 PSI |
 | **Cold weather** | -30C | -12C | Not specified | Not specified |
 | **Wireless** | ANT+ AND BLE | ANT+ AND BLE | BLE only | BLE only |
@@ -110,7 +110,7 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 - **Buy once, keep forever** — $66 CAD/pair, replaceable CR1225 battery (~$1 every 2-3 years), and OTA firmware updates via BLE mean the sensor improves over time without replacing hardware. Competitors: Outrider models are potted in epoxy — when the battery dies, the sensor is e-waste. You buy again.
 - **OTA firmware updates** — Nordic secure DFU bootloader lets you flash new firmware over BLE through the tire. New features, better algorithms, bug fixes — all without opening the sensor. TL Mini (ANT+ only) physically cannot do OTA. Outrider TL Pro has no confirmed OTA capability.
 - **Cheapest** — ~$66 CAD/pair at batch of 50 vs $95-178 CAD for competitors
-- **Same accuracy as the best** — ±0.4-0.8% matches Outrider TL Pro's ±0.5%, and beats TyreWiz/TL Mini at ±2%
+- **Same accuracy as the best** — <1% matches Outrider TL Pro's ±0.5%, and beats TyreWiz/TL Mini at ±2%
 - **Only open-source sensor with ANT+ AND BLE** — both Outrider models are BLE only (no Wahoo support). Only TyreWiz and OpenTPMS support both protocols simultaneously.
 - **Temperature-compensated flat detection** — the only sensor that eliminates false alarms from weather changes
 - **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter. Others struggle below -10C.
