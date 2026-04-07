@@ -117,6 +117,8 @@ Unlike competitors that pot their sensors in epoxy (making the battery permanent
 - **Pressure range** — 435 PSI covers every application including fat bikes and high-pressure road
 - **Open source** — inspect, modify, improve. No vendor lock-in. No subscription. No proprietary app required.
 
+> Every other cycling TPMS is a black box — you trust the manufacturer's firmware, accept their limitations, and throw it away when the battery dies. OpenTPMS is the first sensor where you know exactly what's measuring your pressure, how the flat detection algorithm works, and can fix or improve it yourself. Your sensor, your data, your rules.
+
 ### Cost breakdown (CAD, batch of 50 sensors)
 
 | Category | Per sensor | Per pair |
