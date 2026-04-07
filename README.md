@@ -16,7 +16,7 @@ An open-source, in-tire TPMS sensor for tubeless bicycles with replaceable CR122
 - **Temperature-compensated flat alerts** — eliminates false alarms from weather changes
 - **Cold weather operation** — -30C with ceramic buffer cap + DC-DC converter
 - **Universal fit** — 16mm wide PCB fits 19mm+ internal width rims (all modern tubeless)
-- **Open-source** — CERN OHL v2 (hardware) + MIT (firmware/software)
+- **Open-source** — CC BY-NC-SA 4.0 (non-commercial sharing allowed)
 - **Lightweight** — ~6.5g per sensor
 
 ## How It Works
@@ -160,8 +160,11 @@ OpenTPMS/
 
 ## License
 
-- **Hardware:** CERN Open Hardware Licence Version 2 — Strongly Reciprocal (CERN-OHL-S-2.0)
-- **Firmware/Software:** MIT License
+**CC BY-NC-SA 4.0** — Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+
+You can share, modify, and build upon this project for **non-commercial purposes only**, with attribution and under the same license. Commercial use requires permission from the author.
+
+For commercial licensing inquiries: sruelland@northislandcollege.ca
 
 ## Acknowledgments
 
