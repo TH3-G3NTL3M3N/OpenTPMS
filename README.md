@@ -57,17 +57,42 @@ Temperature-compensated flat detection uses the ideal gas law (P1/T1 = P2/T2) to
 | Flat detection | Temperature-compensated, <30s detection |
 | Rim compatibility | 21mm+ internal width (all MTB, gravel, most road tubeless) |
 
-## Comparison vs SRAM TyreWiz 2.0
+## Comparison vs Commercial TPMS Sensors
 
-| Feature | OpenTPMS | TyreWiz 2.0 |
-|---------|----------|-------------|
-| Price | ~$44/sensor | $60+/sensor |
-| Battery life | 2-3 years | 200-300 hours |
-| Accuracy | ±0.4-0.8% | ±2% |
-| Cold weather | -30C | -12C |
-| Temp-compensated alerts | Yes | No |
-| Open source | Yes | No |
-| Weight | 6.5g | 10g |
+| Feature | **OpenTPMS (v1)** | **SRAM TyreWiz 2.0** | **Outrider TL Pro** | **Outrider TL Mini** |
+|---------|:---------:|:----------:|:----------:|:----------:|
+| **Price (pair)** | ~$88 | $120-130 | $89 | $55-69 |
+| **Weight** | ~6.5g | 10g | 6.9g | 3.7g |
+| **Battery life** | 2-3 years | 200-300 hrs | 5+ years | 2,000 hrs |
+| **Battery** | CR1225 replaceable | CR1632 replaceable | Potted (not replaceable) | Replaceable |
+| **Accuracy** | ±0.4-0.8% | ±2% | ±0.5% | ±2% |
+| **Max pressure** | 435 PSI | 150 PSI | 200 PSI | 125 PSI |
+| **Cold weather** | -30C | -12C | Not specified | Not specified |
+| **Wireless** | ANT+ AND BLE | ANT+ AND BLE | ANT+ AND BLE | ANT+ |
+| **Garmin support** | Yes (Connect IQ) | Yes (AXS app) | Yes (Datafield) | Yes (app) |
+| **Phone app** | Yes (Web BLE) | Yes (AXS app) | Yes (iOS/Android) | Yes (iOS/Android) |
+| **Wahoo support** | Yes (ANT+) | Yes | Via sideload | ANT+ only |
+| **Temp-compensated alerts** | Yes | No | No | No |
+| **Flat detection** | Yes (<30s) | Yes (false positives reported) | Yes | Yes |
+| **Sealant resistance** | IP67 + ePTFE membrane | IPX7 | Aerospace epoxy potted | IP68 |
+| **Open source** | Yes (CC BY-NC-SA) | No | No | No |
+| **NFC pairing** | Hardware ready (v2 firmware) | Yes | No | No |
+| **Rim compatibility** | 21mm+ (v1) | All tubeless | 21mm+ (25mm+ MTB) | 19mm+ |
+| **Tire inserts** | Compatible (verify CushCore) | Compatible | Tight fit | Better fit |
+
+### Where OpenTPMS wins:
+- **Temperature-compensated flat detection** — only sensor that eliminates false alarms from weather changes
+- **Cold weather operation** — -30C with supercap buffer, others struggle below -10C
+- **Pressure range** — 435 PSI covers every application
+- **Dual wireless** — ANT+ AND BLE simultaneously (TL Mini is ANT+ only)
+- **Replaceable battery** — TL Pro is potted forever, TyreWiz was fiddly until 2.0
+- **Open source** — inspect, modify, improve. No vendor lock-in.
+
+### Where competitors win:
+- **Outrider TL Mini** — lighter (3.7g vs 6.5g), smaller, narrower rim compatibility (19mm+)
+- **Outrider TL Pro** — better accuracy claim (±0.5%), longer battery (5+ years, but not replaceable)
+- **TyreWiz 2.0** — polished SRAM AXS app ecosystem, NFC pairing, LED indicator
+- **All competitors** — finished consumer products, no assembly required
 
 ## Project Status
 
