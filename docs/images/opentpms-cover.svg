@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="pcb" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a472a"/>
+      <stop offset="100%" style="stop-color:#0d2818"/>
+    </linearGradient>
+    <linearGradient id="copper" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#b87333"/>
+      <stop offset="100%" style="stop-color:#da9100"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffd700"/>
+      <stop offset="100%" style="stop-color:#ffaa00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+    <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#ffffff06" stroke-width="0.5"/>
+  </pattern>
+  <rect width="1200" height="900" fill="url(#grid)"/>
+
+  <!-- PCB Board - angled for depth -->
+  <g transform="translate(600,420) rotate(-8) skewY(2)">
+    <!-- PCB shadow -->
+    <rect x="-85" y="-195" width="170" height="390" rx="4" fill="#000" opacity="0.4" transform="translate(8,8)"/>
+
+    <!-- PCB body -->
+    <rect x="-85" y="-195" width="170" height="390" rx="4" fill="url(#pcb)" stroke="#2d5a3d" stroke-width="1.5"/>
+
+    <!-- Soldermask texture -->
+    <rect x="-85" y="-195" width="170" height="390" rx="4" fill="#0d5a0d" opacity="0.15"/>
+
+    <!-- Valve hole -->
+    <circle cx="0" cy="10" r="28" fill="#0a0a0a" stroke="#2d5a3d" stroke-width="1"/>
+    <circle cx="0" cy="10" r="24" fill="none" stroke="#b8733366" stroke-width="1"/>
+
+    <!-- Battery pad (bottom) -->
+    <circle cx="0" cy="130" r="48" fill="url(#gold)" opacity="0.8"/>
+    <circle cx="0" cy="130" r="44" fill="url(#gold)" opacity="0.3"/>
+    <text x="0" y="135" text-anchor="middle" fill="#1a472a" font-family="monospace" font-size="11" font-weight="bold">CR1225</text>
+
+    <!-- Main chip (MDBT42Q) -->
+    <rect x="-48" y="-165" width="96" height="120" rx="3" fill="#1a1a1a" stroke="#444" stroke-width="1"/>
+    <rect x="-40" y="-155" width="80" height="40" rx="2" fill="#0a0a0a" stroke="#333" stroke-width="0.5"/>
+    <text x="0" y="-130" text-anchor="middle" fill="#666" font-family="monospace" font-size="8">nRF52832</text>
+    <text x="0" y="-118" text-anchor="middle" fill="#555" font-family="monospace" font-size="6">MDBT42Q</text>
+
+    <!-- Chip pads (left side) -->
+    <g fill="url(#copper)" opacity="0.7">
+      <rect x="-55" y="-155" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-148" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-141" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-134" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-127" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-120" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-113" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-106" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-99" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-92" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-85" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-78" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-71" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-64" width="8" height="4" rx="0.5"/>
+      <rect x="-55" y="-57" width="8" height="4" rx="0.5"/>
+    </g>
+
+    <!-- Chip pads (right side) -->
+    <g fill="url(#copper)" opacity="0.7">
+      <rect x="47" y="-155" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-148" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-141" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-134" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-127" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-120" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-113" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-106" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-99" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-92" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-85" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-78" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-71" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-64" width="8" height="4" rx="0.5"/>
+      <rect x="47" y="-57" width="8" height="4" rx="0.5"/>
+    </g>
+
+    <!-- Traces (copper) -->
+    <g stroke="url(#copper)" stroke-width="1.2" fill="none" opacity="0.6">
+      <path d="M -47,-130 L -70,-130 L -70,-50 L -55,-50"/>
+      <path d="M -47,-120 L -65,-120 L -65,-40 L 40,-40 L 40,60"/>
+      <path d="M 55,-100 L 70,-100 L 70,60"/>
+      <path d="M 55,-90 L 75,-90 L 75,70 L 50,70"/>
+      <path d="M -47,-80 L -72,-80 L -72,55"/>
+      <path d="M 0,-45 L 0,10"/>
+      <path d="M -30,60 L -30,90"/>
+      <path d="M 30,60 L 30,90"/>
+    </g>
+
+    <!-- Small components (passives) -->
+    <rect x="-75" y="-50" width="6" height="3" rx="0.5" fill="#2a2a2a" stroke="#555" stroke-width="0.5"/>
+    <rect x="-75" y="-40" width="6" height="3" rx="0.5" fill="#2a2a2a" stroke="#555" stroke-width="0.5"/>
+    <rect x="68" y="-60" width="6" height="3" rx="0.5" fill="#2a2a2a" stroke="#555" stroke-width="0.5"/>
+    <rect x="68" y="-50" width="6" height="3" rx="0.5" fill="#2a2a2a" stroke="#555" stroke-width="0.5"/>
+    <rect x="68" y="-40" width="6" height="3" rx="0.5" fill="#2a2a2a" stroke="#555" stroke-width="0.5"/>
+
+    <!-- Pressure sensor (MS5837) -->
+    <rect x="25" y="55" width="28" height="28" rx="2" fill="#2a2a2a" stroke="#555" stroke-width="0.8"/>
+    <circle cx="39" cy="69" r="4" fill="none" stroke="#666" stroke-width="0.5"/>
+    <text x="39" y="88" text-anchor="middle" fill="#555" font-family="monospace" font-size="5">MS5837</text>
+
+    <!-- LIS2DH12 -->
+    <rect x="-72" y="-70" width="16" height="16" rx="1.5" fill="#2a2a2a" stroke="#555" stroke-width="0.8"/>
+
+    <!-- Vias -->
+    <g fill="#b87333" opacity="0.8">
+      <circle cx="-60" cy="-30" r="2.5"/>
+      <circle cx="60" cy="-20" r="2.5"/>
+      <circle cx="-50" cy="40" r="2.5"/>
+      <circle cx="50" cy="40" r="2.5"/>
+      <circle cx="-20" cy="60" r="2.5"/>
+      <circle cx="20" cy="60" r="2.5"/>
+      <circle cx="-40" cy="-10" r="2.5"/>
+      <circle cx="65" cy="30" r="2.5"/>
+    </g>
+
+    <!-- Via holes -->
+    <g fill="#0a0a0a">
+      <circle cx="-60" cy="-30" r="1"/>
+      <circle cx="60" cy="-20" r="1"/>
+      <circle cx="-50" cy="40" r="1"/>
+      <circle cx="50" cy="40" r="1"/>
+      <circle cx="-20" cy="60" r="1"/>
+      <circle cx="20" cy="60" r="1"/>
+      <circle cx="-40" cy="-10" r="1"/>
+      <circle cx="65" cy="30" r="1"/>
+    </g>
+
+    <!-- Mounting holes -->
+    <circle cx="-72" cy="-182" r="7" fill="#0a0a0a" stroke="#b8733366" stroke-width="1"/>
+    <circle cx="72" cy="-182" r="7" fill="#0a0a0a" stroke="#b8733366" stroke-width="1"/>
+    <circle cx="-72" cy="182" r="7" fill="#0a0a0a" stroke="#b8733366" stroke-width="1"/>
+    <circle cx="72" cy="182" r="7" fill="#0a0a0a" stroke="#b8733366" stroke-width="1"/>
+
+    <!-- Test pads -->
+    <circle cx="-70" cy="-30" r="4" fill="url(#gold)" opacity="0.5"/>
+    <circle cx="-70" cy="-18" r="4" fill="url(#gold)" opacity="0.5"/>
+
+    <!-- Silkscreen text -->
+    <text x="0" y="-185" text-anchor="middle" fill="#c0c0c044" font-family="monospace" font-size="7" font-weight="bold">OpenTPMS v1</text>
+  </g>
+
+  <!-- Title -->
+  <text x="160" y="120" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" letter-spacing="-2">Open</text>
+  <text x="385" y="120" fill="url(#gold)" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" letter-spacing="-2">TPMS</text>
+
+  <!-- Subtitle -->
+  <text x="160" y="160" fill="#888" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="400">Open-Source Bicycle Tire Pressure Sensor</text>
+
+  <!-- Feature tags -->
+  <g transform="translate(160, 200)">
+    <rect x="0" y="0" width="100" height="28" rx="14" fill="#ffffff10" stroke="#ffffff20" stroke-width="1"/>
+    <text x="50" y="18" text-anchor="middle" fill="#ccc" font-family="system-ui, sans-serif" font-size="12">ANT+ / BLE</text>
+
+    <rect x="112" y="0" width="70" height="28" rx="14" fill="#ffffff10" stroke="#ffffff20" stroke-width="1"/>
+    <text x="147" y="18" text-anchor="middle" fill="#ccc" font-family="system-ui, sans-serif" font-size="12">&lt;1%</text>
+
+    <rect x="194" y="0" width="80" height="28" rx="14" fill="#ffffff10" stroke="#ffffff20" stroke-width="1"/>
+    <text x="234" y="18" text-anchor="middle" fill="#ccc" font-family="system-ui, sans-serif" font-size="12">-30C</text>
+
+    <rect x="286" y="0" width="65" height="28" rx="14" fill="#ffffff10" stroke="#ffffff20" stroke-width="1"/>
+    <text x="318" y="18" text-anchor="middle" fill="#ccc" font-family="system-ui, sans-serif" font-size="12">6.5g</text>
+  </g>
+
+  <!-- Key specs on the left -->
+  <g transform="translate(160, 680)">
+    <text x="0" y="0" fill="#666" font-family="monospace" font-size="13">PRESSURE</text>
+    <text x="0" y="22" fill="#ddd" font-family="system-ui, sans-serif" font-size="18" font-weight="600">0 - 435 PSI</text>
+
+    <text x="180" y="0" fill="#666" font-family="monospace" font-size="13">BATTERY</text>
+    <text x="180" y="22" fill="#ddd" font-family="system-ui, sans-serif" font-size="18" font-weight="600">2-3 Years</text>
+
+    <text x="340" y="0" fill="#666" font-family="monospace" font-size="13">PRICE</text>
+    <text x="340" y="22" fill="#ddd" font-family="system-ui, sans-serif" font-size="18" font-weight="600">~$66 CAD/pair</text>
+  </g>
+
+  <!-- Bottom line -->
+  <line x1="160" y1="740" x2="500" y2="740" stroke="#ffffff15" stroke-width="1"/>
+  <text x="160" y="770" fill="#555" font-family="system-ui, sans-serif" font-size="14">github.com/TH3-G3NTL3M3N/OpenTPMS</text>
+
+  <!-- Sponsored badge -->
+  <text x="160" y="830" fill="#444" font-family="system-ui, sans-serif" font-size="12">PCB sponsored by PCBWay</text>
+</svg>
