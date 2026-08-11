@@ -138,8 +138,8 @@ Every competitor pots their sensor in epoxy, which seals it perfectly but also m
 - [x] Schematic design (Fusion 360 Electronics)
 - [x] PCB layout and routing
 - [x] Gerber files exported for fabrication
-- [ ] PCB fabrication (PCBWay sponsorship)
-- [ ] Component sourcing (DigiKey + Mouser + Amazon + AliExpress)
+- [x] PCB fabrication (PCBWay sponsorship)
+- [ORDERED] Component sourcing (DigiKey + Mouser + Amazon + AliExpress)
 - [ ] Firmware development
 - [ ] Garmin Connect IQ data field
 - [ ] Web Bluetooth configuration tool
