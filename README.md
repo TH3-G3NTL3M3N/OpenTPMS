@@ -1,6 +1,6 @@
 # OpenTPMS: Open-Source Bicycle Tire Pressure Monitoring Sensor
 
-> **Work in Progress.** PCB is designed and heading to fab. Firmware, enclosure, and assembly are next. Install video and build guide coming once the first prototype is riding.
+> **Work in Progress — parts on the way!** Rev 1 PCBs are in hand (thanks PCBWay!), and as of **Aug 13, 2026** every component and assembly tool is ordered: modules, sensors, passives, mechanical hardware, plus a hot plate and hot air station for SMD assembly. While the boxes roll in, work shifts to firmware bring-up (on the nRF52-DK) and enclosure CAD. Install video and build guide coming once the first prototype is riding.
 
 An open-source, in-tire TPMS sensor for tubeless bicycles. Replaceable CR1225 battery, dual ANT+/BLE wireless, temperature-compensated flat detection.
 
@@ -36,7 +36,7 @@ Every competitor pots their sensor in epoxy, which seals it perfectly but also m
 3. **M1.4 DIN912 Allen screws** into brass heat-set inserts with **Loctite 222** threadlocker (removable but secure)
 4. **ePTFE membrane** over the pressure port: air passes through, liquid sealant doesn't
 5. **Silicone conformal coating** (MG Chemicals 422C) on exposed PCB areas between blocks
-6. **Silicone grease** in the screw hex sockets to keep sealant from curing inside
+6. **PAO synthetic grease** (Super Lube) in the screw hex sockets to keep sealant from curing inside — PAO, not silicone grease, because silicone grease swells silicone O-rings
 
 **Battery swap:** Unscrew 2 Allen screws, lift lid, swap CR1225, replace lid. About 2 minutes during a sealant refresh.
 
@@ -138,8 +138,9 @@ Every competitor pots their sensor in epoxy, which seals it perfectly but also m
 - [x] Schematic design (Fusion 360 Electronics)
 - [x] PCB layout and routing
 - [x] Gerber files exported for fabrication
-- [x] PCB fabrication (PCBWay sponsorship)
-- [ORDERED] Component sourcing (DigiKey + Mouser + Amazon + AliExpress)
+- [x] PCB fabrication (PCBWay sponsorship) — **Rev 1 boards received**
+- [x] Component sourcing — **all ordered 2026-08-13** (DigiKey + Mouser + LCSC + Amazon + AliExpress; one part backordered to Aug 25)
+- [ ] Parts arrival + assembly tooling setup (hot plate reflow + hot air rework)
 - [ ] Firmware development
 - [ ] Garmin Connect IQ data field
 - [ ] Web Bluetooth configuration tool
@@ -177,25 +178,25 @@ OpenTPMS/
 ### Electronics (~$39 small quantity)
 | Component | Part | Supplier |
 |-----------|------|----------|
-| MCU + Radio | Raytac MDBT42Q-512KV2 (nRF52832) | Mouser |
+| MCU + Radio | Raytac MDBT42Q-512KV2 (nRF52832) | Raytac's Amazon storefront (distributor stock is thin — LCSC/Mouser were dry) |
 | Pressure Sensor | TE MS5837-30BA | DigiKey |
-| Accelerometer | ST LIS2DH12TR | Mouser |
+| Accelerometer | ST LIS2DH12TR | LCSC (backordered at DigiKey/Mouser) |
 | TX Buffer Cap | Murata GRM31CR60J227ME11L (220uF 1206) | DigiKey |
-| DC-DC Inductor | 10uH 0402 | DigiKey |
-| Battery Contact | Custom PCB pad + lid spring | N/A |
-| Passives | 100nF, 150pF, 4.7k, 100ohm (0402) | DigiKey/Mouser |
+| DC-DC Inductor | Murata LQM18DN100M70L (10uH 0603, overhang-soldered on Rev 1's 0402 pads — see BOM notes) | DigiKey |
+| Battery Contact | Custom PCB pad + lid spring (BeCu strip) | AliExpress |
+| Passives | 100nF, 150pF, 4.7k, 100ohm (0402) | DigiKey |
 
 ### Mechanical
 | Component | Supplier |
 |-----------|----------|
-| CR1225 batteries | Amazon |
+| CR1225 batteries | Renata (local watch shop — rated -40°C, and note: many Amazon "Panasonic CR1225" listings are actually BR1225, a different chemistry that can't handle radio TX pulses) |
 | M1.4 DIN912 Allen screws | AliExpress |
 | M1.4 brass heat-set inserts | AliExpress |
-| Silicone O-rings (12mm, 1mm) | Amazon |
-| ePTFE vent membrane | AliExpress |
-| MG Chemicals 422C conformal coating | Amazon |
+| Silicone O-rings (12mm, 1mm) | Amazon (final size confirmed after enclosure CAD) |
+| ePTFE vent membrane | AliExpress (adhesive filter discs — hydrophobic bench test before trusting) |
+| MG Chemicals 422C conformal coating | Canadian MG distributors (Electro Sonic/ABRA) — prototypes use a thin coat of the RTV below |
 | Permatex Clear RTV silicone | Amazon |
-| Loctite 222 threadlocker | Amazon |
+| Loctite 222 threadlocker (purple — low-strength, NOT blue; blue's break-away torque can round M1.4 sockets) | Amazon |
 
 ### PCB
 - 2-layer, 0.8mm FR4, ENIG, 19mm x 42mm (v1)
@@ -208,12 +209,12 @@ OpenTPMS/
 - GCC ARM toolchain
 - nRF52-DK or J-Link programmer
 - Fusion 360 (PCB/enclosure design)
-- Pinecil V2 or similar soldering iron
+- Hot plate (low-temp solder paste reflow) + hot air station for rework; a soldering iron works for the module's castellated pads
 
 ### Assembly
 1. Order PCBs from Gerber files in `hardware/gerbers/`
 2. Order components per BOM
-3. Solder SMD components with solder paste + iron (Pinecil V2)
+3. Reflow SMD components on a hot plate with low-temp solder paste (Sn42/Bi57 T4); inspect the 2x2mm LGA accelerometer under magnification
 4. Apply conformal coating on exposed PCB strip between blocks
 5. Flash firmware via SWD test pads (using nRF52-DK)
 6. 3D print ABS enclosure (frames + lids), acetone vapor smooth O-ring surfaces
