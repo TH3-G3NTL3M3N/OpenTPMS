@@ -270,7 +270,7 @@ Note: Screw heads (M1.4 DIN912, 1.4mm tall, 2.6mm dia) protrude above the lid su
 
 1. **Frame-to-PCB:** Permanent bond with RTV silicone adhesive. Flexible (survives vibration), chemically inert to tire sealant. PCB surface lightly roughened in bonding area for adhesion.
 2. **Lid-to-frame:** Silicone O-ring (1mm cross-section) in rectangular groove in frame top rim. Lid compresses O-ring ~25% when screwed down.
-3. **Screw retention:** 2x M1.4 stainless Allen screws (DIN912) per block into brass heat-set inserts (~5.5mm boss diameter). Loctite 222 threadlocker. Silicone grease dab on hex sockets to prevent sealant curing inside.
+3. **Screw retention:** 2x M1.4 stainless Allen screws (DIN912) per block into brass heat-set inserts (~5.5mm boss diameter). Loctite 222 (purple, low-strength) threadlocker — NOT blue 242/243: medium-strength break-away torque can round the 1.3mm hex or spin the inserts out of ABS on removal. Grease dab on hex sockets to prevent sealant curing inside — use a PAO-based grease (e.g. Super Lube Multi-Purpose): silicone grease swells silicone o-rings, so keep it away from this assembly entirely.
 4. **Pressure port:** 2mm hole in Block B lid with ePTFE membrane bonded on inner surface. Air-permeable, liquid-proof. Inspectable during battery swap.
 5. **Exposed PCB strip:** 2-3 coats silicone conformal coating between blocks. No exposed copper.
 
@@ -391,9 +391,9 @@ The MDBT42Q's nRF52832 has built-in NFC-A tag hardware. The PCB includes a trace
 5. **Heat-set inserts:** Press M1.4 brass inserts into frame wall bosses (~5.5mm dia) using soldering iron tip.
 6. **Bond frames to PCB:** Apply RTV silicone to frame bottom, position on PCB, cure 24 hours.
 7. **Install ePTFE membrane:** Bond ePTFE disc over pressure port hole in Block B lid with medical-grade adhesive.
-8. **Install O-rings:** Place silicone O-rings in frame grooves.
+8. **Install O-rings:** Place silicone O-rings in frame grooves. Lube lightly with PAO grease (Super Lube MP) — never silicone grease on silicone o-rings.
 9. **Insert battery:** Place CR1225 negative-side-down onto the ENIG copper pad on PCB. Lid spring (step 10) provides positive contact and retention. ⚠ There is no reverse-insertion protection — a flipped cell applies −3V to all ICs. Mold/emboss a "+" polarity marking and battery orientation diagram into the Block B lid interior, and state the orientation prominently in the user manual battery-swap instructions.
-10. **Close lids:** Screw down both lids with M1.4 DIN912 Allen screws + Loctite 222. Dab silicone grease on hex sockets.
+10. **Close lids:** Screw down both lids with M1.4 DIN912 Allen screws + Loctite 222 (ride builds only; no threadlocker during bench prototyping). Dab PAO grease (Super Lube MP) on hex sockets — not silicone grease (swells silicone o-rings).
 11. **Flash firmware:** Connect J-Link to SWD pads on PCB strip. Flash bootloader + application firmware. Assign serial number and default F/R designation.
 12. **Factory pressure calibration:** Using a hand pump + reference gauge, test sensor at 3-5 known absolute pressures (e.g., atmospheric, 1.5 bar, 3 bar, 5 bar, 8 bar). Record sensor reading vs reference at each point. Compute correction polynomial coefficients. Write to nRF52 flash via SWD. ~5 minutes per sensor.
 13. **QC test:** Verify corrected pressure reading matches reference within ±0.15 PSI, BLE/ANT+ broadcast, motion wake, seal check (visual).
