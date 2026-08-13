@@ -1,6 +1,6 @@
 # OpenTPMS — Open-Source Bicycle Tire Pressure Monitoring Sensor
 
-**Date:** 2026-04-01 (updated 2026-04-03)
+**Date:** 2026-04-01 (updated 2026-08-13)
 **Status:** Design Approved (Rev 8 — no commercial battery holder, PCB pad + lid spring contact, Block B back to 5.5mm, 16mm board width preserved)
 **Author:** simruelland + Claude
 
@@ -95,8 +95,8 @@ The sensor measures **absolute pressure** (relative to vacuum). Conversion to ga
 | ePTFE Membrane | Porex PMV10 or generic ePTFE disc | Hydrophobic, air-permeable, sealant-resistant | ~4mm disc | $0.15 |
 | Screws | M1.4 x 3mm stainless steel Allen (DIN912) | 2 per block, 4 total per sensor | 2.6mm head dia, 1.4mm head height | $0.20 |
 | O-Rings | Silicone, custom size | Chemical-resistant, -60 to +200°C, 2 per sensor | ~12 x 1mm cross-section | $0.10 |
-| DC-DC Inductor | 10µH 0402/0603 | Between MDBT42Q VDD (pin 11) and DCC (pin 10). Enables internal buck converter — reduces radio TX current ~30% (7.5mA → 5.3mA). | 0402 or 0603 | $0.05 |
-| Passives | Various 0402 caps, resistors | 3x 100nF decoupling, 2x 4.7kΩ I2C pull-ups, 2x 150pF NFC tuning caps = 7 passive components | 0402 | $0.35 |
+| DC-DC Inductor | Murata LQM18DN100M70L, 10µH 0603 | Between MDBT42Q VDD (pin 11) and DCC (pin 10). Enables internal buck converter — reduces radio TX current ~30% (7.5mA → 5.3mA). Isat 100mA, DCR 1.37Ω max. ⚠ Rev 1 PCB has an 0402 footprint (L1) — no suitable 0402 10µH power inductor exists, so overhang-solder the 0603 part; fallback is LDO mode (leave unpopulated, don't set DCDCEN). Fix footprint in Rev 2. | 0603 on 0402 pads | $0.13 |
+| Passives | Various 0402 caps, resistors | 4x 100nF decoupling, 2x 4.7kΩ I2C pull-ups, 2x 150pF C0G NFC tuning caps (GRM1555C1H151JA01D) = 8 passive components (per Rev 1 netlist) | 0402 | $0.35 |
 | NFC Antenna | PCB trace loop | ~10x15mm rectangular copper trace on bottom layer, connected to MDBT42Q NFC1/NFC2 pins. No component — just a routed trace. Ground pour gap required under antenna. | PCB trace | $0.00 |
 | PCB | 2-layer FR4, 0.8mm, ENIG finish | ~19 x 42mm strip with valve hole, conformal coated (v1; v2 target 16mm wide) | — | $1.00 |
 | Enclosure | 3D printed ABS (FDM), frame-on-PCB | 2 frames + 2 lids, brass heat-set M1.4 inserts, ~5.5mm boss dia at screw locations | ~15 x 16mm each | $2.50 |
@@ -385,14 +385,14 @@ The MDBT42Q's nRF52832 has built-in NFC-A tag hardware. The PCB includes a trace
 ### Per-Sensor Assembly Steps
 
 1. **PCB fabrication:** Order from JLCPCB or PCBWay (2-layer, 0.8mm FR4, ENIG, panel of 10+)
-2. **SMT assembly:** Solder paste stencil + reflow oven (or order assembled from JLCPCB SMT service). Components: MDBT42Q, LIS2DH12, MS5837-30BA pressure sensor, SMTM1225 battery clip, 220µF buffer cap, 10µH DC-DC inductor, passives.
+2. **SMT assembly:** Solder paste stencil + reflow oven (or order assembled from JLCPCB SMT service). Components: MDBT42Q, LIS2DH12, MS5837-30BA pressure sensor, 220µF buffer cap, 10µH DC-DC inductor, passives. (No battery holder component — the CR1225 pad is bare ENIG copper.) A stencil is strongly recommended: the LIS2DH12 is a 2x2mm LGA-12 and hand-applied paste is unreliable at that pitch.
 3. **Conformal coat:** Spray silicone conformal coating on exposed PCB strip (valve area), 2-3 coats.
 4. **3D print enclosures:** FDM ABS, 0.1mm layers, 100% infill. 2 frames + 2 lids per sensor. Acetone vapor smooth O-ring surfaces.
 5. **Heat-set inserts:** Press M1.4 brass inserts into frame wall bosses (~5.5mm dia) using soldering iron tip.
 6. **Bond frames to PCB:** Apply RTV silicone to frame bottom, position on PCB, cure 24 hours.
 7. **Install ePTFE membrane:** Bond ePTFE disc over pressure port hole in Block B lid with medical-grade adhesive.
 8. **Install O-rings:** Place silicone O-rings in frame grooves.
-9. **Insert battery:** Place CR1225 negative-side-down onto the ENIG copper pad on PCB. Lid spring (step 10) provides positive contact and retention.
+9. **Insert battery:** Place CR1225 negative-side-down onto the ENIG copper pad on PCB. Lid spring (step 10) provides positive contact and retention. ⚠ There is no reverse-insertion protection — a flipped cell applies −3V to all ICs. Mold/emboss a "+" polarity marking and battery orientation diagram into the Block B lid interior, and state the orientation prominently in the user manual battery-swap instructions.
 10. **Close lids:** Screw down both lids with M1.4 DIN912 Allen screws + Loctite 222. Dab silicone grease on hex sockets.
 11. **Flash firmware:** Connect J-Link to SWD pads on PCB strip. Flash bootloader + application firmware. Assign serial number and default F/R designation.
 12. **Factory pressure calibration:** Using a hand pump + reference gauge, test sensor at 3-5 known absolute pressures (e.g., atmospheric, 1.5 bar, 3 bar, 5 bar, 8 bar). Record sensor reading vs reference at each point. Compute correction polynomial coefficients. Write to nRF52 flash via SWD. ~5 minutes per sensor.

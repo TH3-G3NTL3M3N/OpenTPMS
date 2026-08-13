@@ -35,18 +35,28 @@ Notes for future revision based on competitive analysis (Outrider TL Pro teardow
    - Better sealing (monolithic block vs multi-part assembly)
    - Trade-off: battery not replaceable (potted permanently)
 
-6. **Optimized antenna placement**
+6. **Fix L1 (DC-DC inductor) footprint — 0603, not 0402**
+   - Rev 1 has an 0402 footprint, but no 0402 10µH part meets the nRF52832 DC-DC requirement (≥50mA saturation)
+   - v1 workaround is overhang-soldering the 0603 LQM18DN100M70L (Isat 100mA) or falling back to LDO mode
+   - v2: use the proper 0603 (or 0805 LQM21PN100) land pattern
+
+7. **Reverse-battery protection**
+   - v1 has none: flat pad + lid spring means a flipped CR1225 applies −3V to all ICs (mitigated only by lid polarity markings)
+   - Options: P-FET ideal-diode (near-zero drop), series Schottky (~0.3V drop hurts at end-of-life), or mechanical keying in the battery pocket
+   - Moot if v2 goes potted/non-replaceable (CR1632 potted design) — but required if the replaceable battery is kept
+
+8. **Optimized antenna placement**
    - PCB trace antenna on the thin end (1.6mm section, away from battery)
    - Ground pour keep-out zone designed into the linear layout
    - No module antenna constraints
 
 ### Firmware Changes
 
-7. **ANT+ only option (drop concurrent BLE for power savings)**
+9. **ANT+ only option (drop concurrent BLE for power savings)**
    - Outrider TL Pro is ANT+ only — achieves 5+ year battery life
    - Could offer two firmware variants: ANT+ only (max battery) or ANT+/BLE (more compatible)
 
-8. **NFC pairing (already hardware-ready from v1)**
+10. **NFC pairing (already hardware-ready from v1)**
    - Enable NFC in firmware for tap-to-pair setup before potting
 
 ### What Stays the Same
