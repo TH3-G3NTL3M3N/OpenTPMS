@@ -1,0 +1,186 @@
+<meta charset="utf-8">
+<title>OpenTPMS Rev 1 Assembly Guide</title>
+<style>
+  @page { margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font: 10.5pt/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; color: #1a1a1a; max-width: 780px; margin: 0 auto; }
+  h1 { font-size: 22pt; margin: 0 0 2px; }
+  h2 { font-size: 14pt; margin: 26px 0 8px; padding-bottom: 3px; border-bottom: 2px solid #1a1a1a; page-break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 16px 0 6px; page-break-after: avoid; }
+  .subtitle { color: #555; font-size: 11pt; margin-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 14px; font-size: 9.5pt; page-break-inside: avoid; }
+  th, td { border: 1px solid #bbb; padding: 4px 7px; text-align: left; vertical-align: top; }
+  th { background: #efefef; }
+  .warn { background: #fff3e6; border-left: 4px solid #e07b00; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .stop { background: #fdecec; border-left: 4px solid #c0392b; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .tip  { background: #eaf3ea; border-left: 4px solid #2e7d32; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .warn b:first-child, .stop b:first-child, .tip b:first-child { display: inline-block; margin-bottom: 2px; }
+  ol li, ul li { margin-bottom: 5px; }
+  code { font-family: "SF Mono", Menlo, monospace; font-size: 9pt; background: #f2f2f2; padding: 0 3px; border-radius: 2px; }
+  .checklist li { list-style: none; margin-left: -18px; }
+  .checklist li::before { content: "☐  "; }
+  .pagebreak { page-break-before: always; }
+  .small { font-size: 9pt; color: #555; }
+</style>
+
+<h1>OpenTPMS Rev 1 — Assembly Guide</h1>
+<p class="subtitle">First prototype build &nbsp;·&nbsp; hot-plate reflow with low-temp paste &nbsp;·&nbsp; written for a first-time PCB assembler</p>
+<p class="small">Rev 1 boards (PCBWay, 19×42mm, 0.8mm FR4 ENIG) · Guide version 2026-08-13 · Companion to <code>docs/OpenTPMS_BOM.xlsx</code> and <code>docs/design-spec.md</code></p>
+
+<div class="tip"><b>The one-sentence plan:</b> put tiny dots of low-temperature solder paste on every pad, place all the parts with tweezers, set the board on the hot plate until everything melts and self-aligns (~1 minute), cool, inspect under the microscope, fix anything ugly, then flash and test. You have 5 boards and 3 component sets — <b>build ONE board first</b> and don't touch the other components until board #1 works.</p></div>
+
+<h2>1 · Your tools &amp; materials</h2>
+<table>
+<tr><th>Item</th><th>Role in this build</th></tr>
+<tr><td>ALIENTEK HP15 hot plate</td><td>Primary reflow AND all rework (you have no hot air station — you don't need one; see §8)</td></tr>
+<tr><td>Andonstar AD246S-M microscope</td><td>Inspection after every reflow; placement help for the small parts</td></tr>
+<tr><td>Soldering iron</td><td>Module castellation touch-ups, BeCu spring wire, passive fixes</td></tr>
+<tr><td>Chip Quik Sn42/Bi57/Ag1 T4 paste (10g syringe)</td><td>Melts at 138°C — this low melting point is what makes hot-plate assembly and rework easy</td></tr>
+<tr><td>Chip Quik Smooth Flow no-clean tack flux (10cc)</td><td>Rework and touch-ups only — the paste already contains flux, don't add more for the main reflow</td></tr>
+<tr><td>Kapton tape</td><td>Masking, holding wires, protecting the battery pad</td></tr>
+<tr><td>From the bench drawer</td><td>Fine tweezers, solder wick, thin solder wire, 99% IPA + lint-free swabs, multimeter, Dupont jumper wires</td></tr>
+<tr><td>nRF52-DK + PPK2</td><td>Flashing (DK) and first power-up + current measurement (PPK2)</td></tr>
+</table>
+<div class="warn"><b>Paste storage:</b> keep the syringe in the fridge. Take it out <b>30–60 min before use</b> so it reaches room temperature — cold paste dispenses badly and condensation causes solder balls. Recap and refrigerate after.</div>
+
+<h2>2 · What goes on the board</h2>
+<p>Everything mounts on the <b>top side</b>. Reference designators and positions from the Rev 1 pick-and-place file:</p>
+<table>
+<tr><th>RefDes</th><th>Part</th><th>Package</th><th>Qty/board</th><th>Orientation / notes</th></tr>
+<tr><td>E1</td><td>MDBT42Q-512KV2 module</td><td>10.5×15.5mm, castellated edges</td><td>1</td><td>Fits one way — match silkscreen outline; antenna end at board edge</td></tr>
+<tr><td>U1</td><td>MS5837-30BA pressure sensor</td><td>3.3×3.3mm ceramic, gel port on top</td><td>1</td><td><b>Port faces UP.</b> Match pin 1 to silkscreen. Never touch or flood the gel port</td></tr>
+<tr><td>U2</td><td>LIS2DH12 accelerometer</td><td>2×2mm LGA-12, pads underneath</td><td>1</td><td>Pin 1 dot to silkscreen dot — <b>easy to get 90° wrong, check twice</b></td></tr>
+<tr><td>C8</td><td>220µF ceramic</td><td>1206</td><td>1</td><td>No polarity</td></tr>
+<tr><td>L1</td><td>LQM18DN100M70L 10µH</td><td>0603 part on 0402 pads</td><td>1</td><td>Special case — see §6. No polarity</td></tr>
+<tr><td>C2 C3 C4 C7</td><td>100nF</td><td>0402</td><td>4</td><td>No polarity</td></tr>
+<tr><td>C5 C6</td><td>150pF (NFC)</td><td>0402</td><td>2</td><td>No polarity</td></tr>
+<tr><td>R1 R2</td><td>4.7kΩ</td><td>0402</td><td>2</td><td>No polarity</td></tr>
+<tr><td>U$1</td><td>Battery pad</td><td>bare ENIG circle</td><td>—</td><td><b>NO paste, NO solder — ever.</b> The CR1225 sits directly on clean gold</td></tr>
+<tr><td>TP1–TP4</td><td>SWD test pads</td><td>1.27mm pads</td><td>—</td><td>No paste. Used for flashing in §11</td></tr>
+</table>
+<div class="warn"><b>Do NOT place:</b> the 100Ω resistors (spares only — not on this layout), and nothing goes on the battery pad or test pads. Per-board totals: 1 module, 1 pressure sensor, 1 accelerometer, 1×220µF, 1×10µH, 4×100nF, 2×150pF, 2×4.7k.</div>
+
+<h2>3 · Before any solder: board prep</h2>
+<ol>
+<li><b>Enlarge the valve hole.</b> Rev 1 shipped with a Ø6.0mm hole; the valve stem needs Ø6.7mm. Round file or step drill, by hand, slowly. The nearest via is 4.2mm from hole center so 6.7mm is safe. Much easier now than with parts mounted.</li>
+<li><b>Deburr and clean.</b> Light pass on the filed edge, then wipe the whole board with IPA and let it flash off.</li>
+<li><b>Inspect the virgin board</b> under the microscope for 2 minutes. Learn what clean pads look like — you'll compare against this after reflow. Check the LGA footprint (U2) and module footprint for scratches or contamination.</li>
+<li><b>ESD sense:</b> work on a non-carpet surface, touch something grounded before handling the module and ICs. You don't need a full ESD station for a hobby build, just don't shuffle across carpet in socks and grab the nRF module.</li>
+</ol>
+
+<h2 class="pagebreak">4 · Applying paste (no stencil — syringe method)</h2>
+<p>You're depositing paste by hand from the syringe. The universal first-timer error is <b>too much paste</b>. Target: a dot roughly <b>half the pad's area</b>, sitting on the pad, not bridging to its neighbour. Surface tension during reflow pulls solder onto the copper and self-corrects small errors; it cannot fix giant blobs.</p>
+<ol>
+<li>Warm paste to room temp (§1). Fit the finest tip on the syringe.</li>
+<li>Practice first: push 10 dots onto a paper towel until you can make small consistent dots on demand.</li>
+<li><b>0402 passives:</b> one small dot per pad. If you overshoot, drag the excess away with a toothpick.</li>
+<li><b>C8 (1206) and L1:</b> slightly bigger dots, still under half the pad.</li>
+<li><b>U1 (MS5837):</b> one modest dot per pad. Keep paste OFF the center of the footprint.</li>
+<li><b>U2 (LGA-12) — the critical one:</b> the smallest dots you can make, one per pad. These pads are ~0.25mm; if your dots merge, wipe the whole footprint with IPA and redo. Under-pasting an LGA beats over-pasting it every time — thin joints work, bridges under the package are invisible.</li>
+<li><b>E1 (module):</b> a small dot on each castellation pad on the board. The pads are half-exposed at the module edge, which means you can also fix any of them later with the iron — this is the most forgiving part on the board.</li>
+</ol>
+<div class="tip"><b>Take your time.</b> Paste doesn't expire on the board in an hour. Do the LGA last so your technique is warmed up, inspect every footprint under the microscope before moving on.</div>
+
+<h2>5 · Placing components</h2>
+<ol>
+<li>Order: <b>passives first</b> (C2–C7, R1, R2, C8, L1), then <b>U1</b>, then <b>U2</b>, then <b>E1</b> last (it's big and easy to bump).</li>
+<li>Grip parts by their sides with tweezers, set them down onto the paste, then a <b>gentle</b> press so the paste grabs them. Don't squash — paste squirts sideways into bridges.</li>
+<li>Placement accuracy: within about half a pad is fine — molten solder pulls parts into alignment. Rotation matters more than offset for U2 (the LGA can self-align to the wrong 90° if placed badly). Verify the pin-1 dot under the microscope after placing.</li>
+<li>U1: confirm the gel port faces up and pin 1 matches silkscreen.</li>
+<li>E1: align the castellations with their pads by eye along both edges before pressing down.</li>
+</ol>
+
+<h2>6 · L1: the 0603-on-0402 special case</h2>
+<p>Rev 1's inductor footprint is 0402, but no 0402 10µH part can handle the radio's current — so you're mounting a physically larger 0603 (LQM18DN100M70L) on the smaller pads. The part will overhang the pads slightly on both ends.</p>
+<ol>
+<li>Paste both pads normally, place the 0603 centered so both end terminations contact their pads.</li>
+<li>After reflow, expect smaller-than-normal fillets. That's fine — verify both ends actually wetted (shiny connection between termination and pad, no gap).</li>
+<li>If it won't sit or won't wet: <b>remove it and don't fight it.</b> The board runs perfectly on the internal LDO with L1 absent — the firmware simply never enables the DC-DC (<code>DCDCEN</code> stays off). You lose ~30% TX efficiency, which is irrelevant for validating a prototype.</li>
+</ol>
+
+<h2 class="pagebreak">7 · Reflow on the hot plate</h2>
+<p>Sn42/Bi57/Ag1 melts at 138°C. You do not need an aggressive profile — low and slow is the whole point of this paste.</p>
+<ol>
+<li>Put the hot plate somewhere ventilated (flux smoke is unpleasant, not dangerous in these amounts — still, don't hover your face over it). Have tweezers and good light ready.</li>
+<li>Set the HP15 to <b>~100°C</b>, place the populated board on the plate, give it ~90 seconds to preheat evenly. (This dries the paste and prevents solder balls.)</li>
+<li>Raise the setpoint to <b>~165–175°C</b>. Watch the board, not the display — plate surface temperature and setpoint aren't identical.</li>
+<li>You'll see the gray paste suddenly turn shiny and liquid — that's reflow. Parts will visibly twitch and snap into alignment. Delightful, and normal.</li>
+<li>Once <b>everything</b> has gone shiny (the big module pads reflow last), hold <b>20–30 more seconds</b>, then turn the plate off or lift the board off with tweezers at the bare board edges onto a heatproof surface.</li>
+<li><b>Do not touch anything for 2 minutes.</b> Joints solidify around 138°C; nudging a part during solidification makes a cracked joint.</li>
+</ol>
+<div class="stop"><b>If a part is visibly wrong during reflow</b> (tombstoned upright, drifted sideways, LGA sitting crooked): fix it NOW while everything is molten — a calm nudge with tweezers, the solder is liquid and forgiving. This is easier than any rework later.</div>
+<div class="warn"><b>Hot plate safety:</b> it looks the same at 25°C and 175°C. Assume it's hot, keep the paste syringe and flux away from it, never leave it on unattended.</div>
+
+<h2>8 · Inspection (microscope time)</h2>
+<p>Check every joint at 20–50×. What you're looking for:</p>
+<table>
+<tr><th>Check</th><th>Good</th><th>Bad → fix (§9)</th></tr>
+<tr><td>Passive fillets</td><td>Solder wets both the pad and the part's end cap in a smooth curve. Bi alloy joints look slightly duller than regular solder — that's normal, not a cold joint</td><td>Solder only on pad OR only on part; part standing up (tombstone); two pads joined by a solder band (bridge)</td></tr>
+<tr><td>U2 LGA edges</td><td>A thin bright line of solder visible at each pad position along all four sides; part sits flat and level</td><td>Package tilted; solder squeezed out at the edges (likely bridged underneath); a side with no visible solder line</td></tr>
+<tr><td>U1 MS5837</td><td>All 4 pads wetted, part flat, gel port clean and un-splattered</td><td>Flux residue over the port; part tilted</td></tr>
+<tr><td>E1 castellations</td><td>Each half-moon pad shows solder flowing up the castellation</td><td>Any castellation with a gap between module and pad</td></tr>
+<tr><td>Solder balls</td><td>None</td><td>Tiny spheres scattered near joints — poke them off with tweezers/IPA swab; if many, your preheat was too short</td></tr>
+</table>
+<p>Then two multimeter checks <b>before any power</b>:</p>
+<ol>
+<li><b>VCC to GND resistance</b> (use the battery pad and a GND test point): must NOT be a short. Expect the reading to climb as the 220µF charges from the meter — climbing = good. Steady near 0Ω = there's a bridge somewhere; find it before going further.</li>
+<li><b>Continuity from each module castellation to its trace</b> for the SWD pads at minimum (TP pads to module) — confirms the module edges actually connected.</li>
+</ol>
+
+<h2>9 · Rework — with a hot plate instead of hot air</h2>
+<p>Your rework tool is the same plate. Because the paste melts at 138°C, the whole board re-melts gently:</p>
+<ul>
+<li><b>Wrong/failed part:</b> board back on the plate at ~165°C → wait for shimmer → lift the part with tweezers → slide the board off → clean its pads with wick + tack flux (iron) → wipe with IPA → re-paste, re-place, reflow again. The other parts re-melt too but surface tension holds them in place — don't bump them.</li>
+<li><b>Module castellation not wetted:</b> no plate needed — dab of tack flux, touch the iron with a little wire solder to the castellation. This is normal iron soldering on an easy joint.</li>
+<li><b>Passive bridge:</b> tack flux on the bridge, drag the clean iron tip across it — the solder splits back to the pads. Wick if stubborn.</li>
+<li><b>Suspected bridge UNDER the LGA:</b> don't poke at it — remove the part (plate method), clean the footprint completely, re-paste with smaller dots, place a <b>fresh</b> LIS2DH12 (you have 5 spares at $0.92; the removed one goes in the maybe-later jar).</li>
+</ul>
+<div class="warn"><b>Budget for the MS5837:</b> it tolerates about 3 reflow cycles and its gel port must stay clean and dry — no ultrasonic bath, no flooding with flux or IPA. Spot-clean around it only. If a board needs many rework cycles, pull the sensor off early and keep it safe.</div>
+
+<h2 class="pagebreak">10 · Cleaning</h2>
+<ol>
+<li>The no-clean flux in paste and tack flux can technically stay, but residue makes inspection harder and coating adhesion worse. Spot-clean around joints with IPA on a swab.</li>
+<li><b>Keep IPA away from the MS5837's gel port</b> — clean up to it, not over it.</li>
+<li><b>The battery pad must end up pristine bare gold</b> — no flux film, no fingerprints. Wipe it last with a clean swab.</li>
+<li>Let everything dry fully before power.</li>
+</ol>
+
+<h2>11 · First power &amp; flashing</h2>
+<div class="tip"><b>Power the first board through the PPK2</b> in source-meter mode at 3.0V. It supplies power AND shows you the current in real time — the single best smoke-test tool you own.</div>
+<ol>
+<li>Wire PPK2 VOUT → board VCC (battery pad or VCC test pad), PPK2 GND → board GND. Enable output at <b>3.0V</b>.</li>
+<li>A blank (unprogrammed) nRF52832 typically idles in the µA–low-mA range. <b>Tens of mA or a climbing current = power off immediately</b> and go find the short (§8 checks).</li>
+<li>Identify the four test pads from the Fusion 360 schematic before wiring: SWDIO, SWCLK, plus VCC/GND references (TP1/TP2 sit near the module, TP3/TP4 in Block B — confirm which is which from the schematic, don't guess).</li>
+<li>Connect the nRF52-DK's <b>Debug Out (P20)</b> header to the board with jumper wires: SWDIO→SWDIO, SWDCLK→SWCLK, GND→GND, and VTG (target voltage sense) → board VCC. Keep the wires short.</li>
+<li>Test the link: <code>nrfjprog --recover</code> then <code>nrfjprog --ids</code> / read the device — if the chip answers, your module soldering is proven good.</li>
+<li>Flash SoftDevice S332 + application when firmware is ready. For assembly sign-off, a successful <code>--recover</code> plus a blink or RTT "hello" is enough.</li>
+</ol>
+
+<h2>12 · Bring-up checklist (assembly sign-off)</h2>
+<ul class="checklist">
+<li>Valve hole enlarged to Ø6.7mm, edge smooth, bore re-coated later with the strip</li>
+<li>All parts placed per §2 table, orientations verified under microscope</li>
+<li>Reflow done, every joint inspected, no bridges/tombstones/balls</li>
+<li>No short VCC↔GND (climbing resistance)</li>
+<li>PPK2 3.0V power-up: current sane, nothing warm</li>
+<li>SWD responds (<code>nrfjprog --recover</code> works)</li>
+<li>Test firmware sees both I2C devices: <b>0x76</b> (MS5837) and <b>0x19</b> (LIS2DH12)</li>
+<li>Pressure reading changes when you gently press near (not on) the sensor / blow on it (temperature moves too)</li>
+<li>Sleep current measured on PPK2 (target &lt;5µA in deep sleep once firmware supports it)</li>
+<li>L1 decision recorded: DC-DC works, or L1 removed → LDO mode noted for firmware</li>
+</ul>
+<div class="tip"><b>Only after every box is ticked:</b> thin RTV coat on the exposed strip + valve hole bore + around (not over) the sensor port, then on to enclosure assembly (separate guide, once the CAD exists). And only then build boards #2 and #3.</div>
+
+<h2>13 · Troubleshooting quick reference</h2>
+<table>
+<tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+<tr><td>Part standing on end (tombstone)</td><td>Uneven paste or one pad heated first</td><td>Tweezer it down during re-melt on the plate</td></tr>
+<tr><td>SWD dead, module looks fine</td><td>One or more castellations not wetted</td><td>Flux + iron each SWD-related castellation; re-check continuity TP→module</td></tr>
+<tr><td>I2C scan finds nothing</td><td>Pull-ups (R1/R2) not soldered, or SDA/SCL bridge</td><td>Inspect R1/R2 joints and the I2C traces near U1/U2</td></tr>
+<tr><td>Finds 0x76 but not 0x19</td><td>LGA joint failure or rotated U2</td><td>Check the pin-1 dot; if right, remove U2, clean, fresh part with less paste</td></tr>
+<tr><td>Current tens of mA at idle</td><td>Solder bridge, or reversed placement</td><td>Power off, resistance checks, inspect around whatever got hot</td></tr>
+<tr><td>Sleep current high (&gt;50µA) later</td><td>Flux residue leakage or firmware not sleeping</td><td>Clean board thoroughly; verify with PPK2 while toggling firmware states</td></tr>
+<tr><td>Pressure reading stuck/absurd</td><td>Gel port contaminated during rework</td><td>Inspect port; if fouled, the sensor is likely lost — this is why it gets protected during every step</td></tr>
+</table>
+
+<p class="small" style="margin-top:24px">OpenTPMS · CC BY-NC-SA 4.0 · Full design details in <code>docs/design-spec.md</code> · Sourcing in <code>docs/OpenTPMS_BOM.xlsx</code> (incl. PROD To-Buy sheet) · Assembly questions and improvements: open an issue on GitHub.</p>
