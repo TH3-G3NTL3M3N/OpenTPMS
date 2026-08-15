@@ -1,0 +1,148 @@
+<meta charset="utf-8">
+<title>OpenTPMS Firmware Bring-Up &amp; PPK2 Guide</title>
+<style>
+  @page { margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font: 10.5pt/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; color: #1a1a1a; max-width: 780px; margin: 0 auto; }
+  h1 { font-size: 22pt; margin: 0 0 2px; }
+  h2 { font-size: 14pt; margin: 26px 0 8px; padding-bottom: 3px; border-bottom: 2px solid #1a1a1a; page-break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 16px 0 6px; page-break-after: avoid; }
+  .subtitle { color: #555; font-size: 11pt; margin-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 14px; font-size: 9.5pt; page-break-inside: avoid; }
+  th, td { border: 1px solid #bbb; padding: 4px 7px; text-align: left; vertical-align: top; }
+  th { background: #efefef; }
+  .warn { background: #fff3e6; border-left: 4px solid #e07b00; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .stop { background: #fdecec; border-left: 4px solid #c0392b; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .tip  { background: #eaf3ea; border-left: 4px solid #2e7d32; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  ol li, ul li { margin-bottom: 5px; }
+  code { font-family: "SF Mono", Menlo, monospace; font-size: 9pt; background: #f2f2f2; padding: 0 3px; border-radius: 2px; }
+  pre { font-family: "SF Mono", Menlo, monospace; font-size: 8.5pt; background: #f2f2f2; padding: 8px 10px; border-radius: 4px; overflow-x: auto; }
+  .pagebreak { page-break-before: always; }
+  .small { font-size: 9pt; color: #555; }
+</style>
+
+<h1>OpenTPMS — Firmware Bring-Up &amp; PPK2 Guide</h1>
+<p class="subtitle">nRF52-DK toolchain to working sensor drivers &nbsp;·&nbsp; Power Profiler Kit II setup &nbsp;·&nbsp; macOS</p>
+<p class="small">Guide version 2026-08-15 · Companion to <code>docs/implementation-plan.md</code> (Tasks 1–9) and <code>docs/assembly-guide.html</code></p>
+
+<div class="warn"><b>Honest starting point:</b> every file in <code>firmware/src/</code> is a TODO stub — there is no working firmware yet. That's fine: the stubs define the module structure, the implementation plan defines the tasks, and this guide gets you from empty bench to writing them. The DK lets you do 80% of firmware work before a single sensor board is assembled.</div>
+
+<h2>Part A — Firmware bring-up on the nRF52-DK</h2>
+
+<h3>A1 · Install the toolchain (one afternoon)</h3>
+<p>Nordic's tooling changed since our docs were written: <b><code>nrfjprog</code> is deprecated</b> — its replacement is <code>nrfutil device</code>. The stack you want on a Mac in 2026:</p>
+<table>
+<tr><th>Tool</th><th>What for</th><th>Get it</th></tr>
+<tr><td>SEGGER Embedded Studio (SES)</td><td>IDE + compiler + debugger. Free for Nordic chips (license auto-activates for nRF targets). This is the path of least resistance for nRF5 SDK work</td><td>segger.com downloads → Embedded Studio for ARM, macOS package</td></tr>
+<tr><td>J-Link Software Pack</td><td>Debug probe drivers + <b>J-Link RTT Viewer</b> (your printf window)</td><td>segger.com → J-Link software (installs alongside SES)</td></tr>
+<tr><td>nRF Util</td><td>Command-line flash/recover/erase (replaces nrfjprog)</td><td><code>brew install --cask nrfutil</code>, then <code>nrfutil install device</code></td></tr>
+<tr><td>nRF Connect for Desktop</td><td>Launcher for the Power Profiler app (Part B) and Programmer GUI</td><td>nordicsemi.com → nRF Connect for Desktop, macOS</td></tr>
+<tr><td>nRF5 SDK 17.1.0</td><td>The SDK our firmware targets (zip, not a package manager)</td><td>nordicsemi.com → nRF5 SDK downloads → 17.1.0</td></tr>
+</table>
+<div class="warn"><b>Unzip the SDK OUTSIDE the repo</b> — e.g. <code>~/nordic/nRF5_SDK_17.1.0_ddde560</code>. It's ~500MB of Nordic code that never goes in git. Our Makefile/SES project will reference it by path.</div>
+<div class="tip"><b>Why nRF5 SDK and not the newer nRF Connect SDK (Zephyr)?</b> Concurrent BLE+ANT on nRF52832 runs on the S332 SoftDevice, which belongs to the classic nRF5 SDK world. The nRF5 SDK is in maintenance mode but fully functional and stays the right choice for this chip + ANT combination. Don't mix tutorials from the two ecosystems — if a tutorial says <code>west build</code> or "Zephyr," it's the wrong SDK.</div>
+
+<h3>A2 · Day 1: prove the hardware loop (blink)</h3>
+<ol>
+<li>Plug the DK into USB. A drive named <code>JLINK</code> appears — that's the on-board debugger. Power switch ON (it's easy to miss, bottom left).</li>
+<li>In SES: <i>File → Open Solution</i> → <code>SDK/examples/peripheral/blinky/pca10040/blank/ses/blinky_pca10040.emProject</code>. (<code>pca10040</code> = the nRF52-DK board; <code>blank</code> = no SoftDevice.)</li>
+<li>Build (⌘B), then <i>Target → Download</i>. LEDs 1–4 chase on the board.</li>
+<li>Sanity-check the CLI path too: <code>nrfutil device list</code> should show the DK's J-Link serial.</li>
+</ol>
+<p>That's the whole development loop: edit → build → flash → observe. Everything else is content.</p>
+
+<h3>A3 · Day 1–2: RTT logging (your debug lifeline)</h3>
+<p>RTT streams printf-style logs through the debugger — no UART wiring, and unlike a UART it works on the sealed sensor later via the SWD pads.</p>
+<ol>
+<li>Open any example with logging (e.g. <code>examples/peripheral/rtc</code>), confirm in its <code>sdk_config.h</code>: <code>NRF_LOG_BACKEND_RTT_ENABLED 1</code>.</li>
+<li>Flash it, then open <b>J-Link RTT Viewer</b>, target NRF52832_XXAA, SWD, auto-connect.</li>
+<li>You should see <code>NRF_LOG_INFO</code> output. From now on, every driver you write gets logs from day one.</li>
+</ol>
+
+<h3 class="pagebreak">A4 · The S332 SoftDevice (BLE + ANT) — account required</h3>
+<ol>
+<li>The S332 is distributed by Garmin/ANT, not bundled with the SDK. Create a free account at <b>thisisant.com</b> (Adopter level), then download the <b>S332 SoftDevice for nRF52832</b> matching SDK 17 (the SDK's ANT examples state the compatible S332 version in their release notes — take whatever the download page pairs with SDK 17.x).</li>
+<li>While logged in, also grab the <b>ANT+ network key</b> (free for adopters) — you'll need it the day <code>ant_tpms.c</code> broadcasts on the ANT+ network.</li>
+<li>License note: S332 ships with an evaluation key that's fine for prototypes/non-commercial. Selling sensors later requires the commercial ANT license — already on the project radar (~$100/yr, design-spec §5).</li>
+<li>Flash the SoftDevice hex once: <code>nrfutil device program --firmware s332_nrf52_X.X.X_softdevice.hex</code> (or SES does it automatically for SoftDevice-based projects).</li>
+<li>Prove BLE: build an S332-variant example (or <code>ble_app_template</code> adapted to S332), flash, and find your DK advertising in <b>nRF Connect</b> on your phone. Prove ANT: <code>examples/ant/ant_broadcast</code>.</li>
+</ol>
+
+<h3>A5 · I2C groundwork before sensors exist</h3>
+<p>Your MS5837 and LIS2DH12 are bare SMD parts — nothing breadboardable. You can still get the entire I2C stack ready:</p>
+<ol>
+<li>Build and flash <code>examples/peripheral/twi_scanner</code>. It scans the bus and logs every device found. Today it finds nothing — that's expected. This exact binary becomes your <b>board #1 acceptance test</b>: run it against the assembled sensor via SWD and it must report <code>0x76</code> and <code>0x19</code>.</li>
+<li>If you want a live test sooner: any I2C breakout from the parts bin (the ADS1115 boards from the air-station project are I2C! address 0x48) wired to the scanner's SDA/SCL pins + 3V + GND proves your TWIM config end-to-end.</li>
+<li>Read the TWIM (TWI Master with EasyDMA) driver docs in the SDK — that's the API our drivers use (design-spec §3 power notes explain why: CPU sleeps during transfers).</li>
+</ol>
+
+<h3>A6 · Writing the actual firmware — recommended order</h3>
+<p>The repo stubs map to implementation-plan tasks. Write them in this order — it front-loads everything testable <i>without</i> the sensor board:</p>
+<table>
+<tr><th>#</th><th>Module</th><th>Hardware needed</th><th>Notes</th></tr>
+<tr><td>1</td><td><code>ms5837.c</code> conversion math</td><td>None (host-compiled)</td><td>The 24-bit raw → mbar/°C compensation math from the TE datasheet is pure arithmetic. Write it + <code>tests/test_ms5837.c</code> against the datasheet's worked example values, run on your Mac with plain <code>cc</code>. Classic first-embedded-project win</td></tr>
+<tr><td>2</td><td><code>calibration.c</code> + <code>alert.c</code></td><td>None</td><td>Polynomial correction and ideal-gas-law flat detection — pure logic, unit-test both (<code>tests/</code> stubs exist)</td></tr>
+<tr><td>3</td><td><code>ms5837.c</code> I2C layer + <code>motion.c</code></td><td>DK only (compiles/logs), board #1 to verify live</td><td>TWIM transactions; LIS2DH12 register setup for the motion-detect interrupt (ST's app notes have the exact register recipe)</td></tr>
+<tr><td>4</td><td><code>storage.c</code> (FDS)</td><td>DK</td><td>Nordic Flash Data Storage for location/threshold/calibration — fully testable on the DK</td></tr>
+<tr><td>5</td><td><code>ble_tpms.c</code> GATT service</td><td>DK + phone</td><td>Custom service per design-spec §3.5 — test with nRF Connect app, then the web-config page</td></tr>
+<tr><td>6</td><td><code>ant_tpms.c</code></td><td>DK + your Garmin</td><td>Broadcast per the TubeWitch-agreed format: <b>byte 2 = 0x04, bytes 3–5 = FF FF FF</b> (see tubewitch-reply3). Verify on the Edge</td></tr>
+<tr><td>7</td><td><code>main.c</code> state machine + WDT + SAADC + DFU</td><td>DK, then board #1</td><td>Sleep/wake per design-spec §3; power-tune with the PPK2 (Part B)</td></tr>
+</table>
+<div class="tip"><b>Rule of thumb for the whole phase:</b> if a bug can be found on the Mac (math) or the DK (drivers, radio), find it there. Board #1's job is confirming I2C wiring and power numbers — not debugging logic.</div>
+
+<h2 class="pagebreak">Part B — PPK2 setup &amp; first measurements</h2>
+
+<h3>B1 · Setup (20 minutes)</h3>
+<ol>
+<li>Open <b>nRF Connect for Desktop</b> → install the <b>Power Profiler</b> app.</li>
+<li>Connect the PPK2 with a <b>data</b> USB cable (a charge-only cable is the #1 "it doesn't work" cause).</li>
+<li>The app will prompt to update the PPK2's firmware on first connect — accept.</li>
+<li>Two modes, one decision:
+  <ul>
+  <li><b>Source meter</b> — PPK2 <i>supplies</i> 0.8–5.0V and measures the current it delivers. <b>This is our mode</b>: it plays the role of the CR1225 for bench work.</li>
+  <li><b>Ampere meter</b> — PPK2 sits in series with an external supply. You won't need it until measuring a battery-powered sealed unit.</li>
+  </ul></li>
+</ol>
+
+<h3>B2 · Practice 1: known resistor (5 minutes, no surprises)</h3>
+<ol>
+<li>Source meter mode, 3.0V, output enabled, a 10kΩ resistor from VOUT to GND (clip leads or breadboard).</li>
+<li>Expect a flat line at <b>~300µA</b> (Ohm's law: 3.0V/10k). If you see that, you understand the tool.</li>
+<li>Play with the UI on this boring signal: log vs linear Y axis, zoom, the averaging window selection, and the live average readout. These are the controls you'll use constantly.</li>
+</ol>
+
+<h3>B3 · Practice 2: a real MCU profile (optional but worth it)</h3>
+<p>The DK has a current-measurement header (P22) that lets the PPK2 measure just the nRF52832 — the DK user guide's "current measurement" section shows the jumper arrangement. Flash a copy of blinky, then a copy where the CPU sleeps between blinks (<code>__WFE()</code>), and look at the difference. Seeing an MCU's personality in the current trace — CPU spikes, sleep floors, radio bursts later — is the skill that makes the power budget real.</p>
+
+<h3>B4 · What you'll expect from the real board (reference)</h3>
+<table>
+<tr><th>State</th><th>Expected (LDO)</th><th>Expected (DC-DC, if L1 works)</th></tr>
+<tr><td>Blank chip, first power-up</td><td colspan=2>µA to low-mA, stable. Tens of mA = short, power off</td></tr>
+<tr><td>Deep sleep (System OFF + accel watch)</td><td>~3µA</td><td>~3µA</td></tr>
+<tr><td>Idle between TX (RTC running)</td><td>~5µA</td><td>~3µA</td></tr>
+<tr><td>BLE TX burst (~3ms every 3s)</td><td>~12mA peak</td><td>~8mA peak</td></tr>
+<tr><td>ANT+ TX burst (~2ms every 3s)</td><td>~8mA peak</td><td>~5.3mA peak</td></tr>
+<tr><td>Average while riding (target)</td><td colspan=2>&lt;20µA → 2–3 years on 48mAh</td></tr>
+</table>
+<div class="tip"><b>The L1 verdict, measured:</b> once board #1 runs TX firmware, capture a trace with <code>DCDCEN</code> off, then on. If the TX peaks drop ~30%, the overhang-soldered 0603 inductor works — record it in the BOM. If current goes weird or the radio glitches, remove L1 and ship Rev 1 as LDO.</div>
+
+<h3>B5 · PPK2 habits worth forming now</h3>
+<ul>
+<li>Save a screenshot/export of every meaningful trace into <code>docs/images/power/</code> — before/after comparisons are the whole game in power tuning, and they make great README material.</li>
+<li>Measure at 3.0V (fresh cell) and once at 2.4V (dying cell) before calling power "done" — brownout behavior at TX peaks is a cold-weather failure mode we specifically designed the 220µF buffer against.</li>
+<li>Sleep-current debugging order when the floor is too high: flux residue on the board → a peripheral left enabled (TWIM, UART) → log backend still on → GPIO floating. The PPK2 can't tell you which, but the magnitude narrows it.</li>
+</ul>
+
+<h2>Milestones for this phase</h2>
+<table>
+<tr><th>#</th><th>Milestone</th><th>Proof</th></tr>
+<tr><td>1</td><td>Toolchain alive</td><td>Blinky flashed from SES; <code>nrfutil device list</code> sees the DK</td></tr>
+<tr><td>2</td><td>Logging alive</td><td>RTT Viewer streaming NRF_LOG output</td></tr>
+<tr><td>3</td><td>S332 alive</td><td>DK advertising over BLE (phone sees it) + ANT broadcast example runs</td></tr>
+<tr><td>4</td><td>Math proven</td><td>MS5837 compensation + calibration + alert unit tests pass on the Mac</td></tr>
+<tr><td>5</td><td>I2C ready</td><td>twi_scanner runs; (optional) finds an ADS1115 at 0x48</td></tr>
+<tr><td>6</td><td>PPK2 fluent</td><td>Resistor test done; a saved trace exists</td></tr>
+<tr><td>7</td><td>Ready for board #1</td><td>Everything above ✓ — assembly guide takes over from here</td></tr>
+</table>
+
+<p class="small" style="margin-top:24px">OpenTPMS · CC BY-NC-SA 4.0 · Task details in <code>docs/implementation-plan.md</code> · ANT+ packet format agreement in <code>tubewitch-reply3.txt</code> (byte 2 = 0x04).</p>
