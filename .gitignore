@@ -27,3 +27,5 @@ garmin/bin/
 *.tmp
 ~$*
 firmware/tests/test_ms5837
+firmware/tests/test_calibration
+firmware/tests/test_alert
