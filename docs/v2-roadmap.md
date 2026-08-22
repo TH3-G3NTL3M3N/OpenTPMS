@@ -85,6 +85,11 @@ Notes for future revision based on competitive analysis (Outrider TL Pro teardow
 | Screws/inserts/O-rings | ~$0.60 | $0.00 | Eliminated |
 | **Total per sensor** | **~$44** | **~$20-25** | At small qty |
 
+### Ordering Notes for the Rev 2 Fab Run
+
+- Add a **frameless solder paste stencil** to the same PCB order (~$10, custom small size ~100x100mm) — checkbox in the PCBWay/JLCPCB order flow, cut from the paste gerber automatically
+- Consider the Ø6.70 valve hole + bare Ø12 clamp annulus (item 8) as fab-review checks before submitting
+
 ### Prerequisites Before v2
 
 - [ ] v1 prototype tested and validated in real-world riding
