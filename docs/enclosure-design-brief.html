@@ -1,0 +1,180 @@
+<meta charset="utf-8">
+<title>OpenTPMS Enclosure Design Brief</title>
+<style>
+  @page { margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font: 10.5pt/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; color: #1a1a1a; max-width: 780px; margin: 0 auto; }
+  h1 { font-size: 22pt; margin: 0 0 2px; }
+  h2 { font-size: 14pt; margin: 26px 0 8px; padding-bottom: 3px; border-bottom: 2px solid #1a1a1a; page-break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 16px 0 6px; page-break-after: avoid; }
+  .subtitle { color: #555; font-size: 11pt; margin-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 14px; font-size: 9.5pt; page-break-inside: avoid; }
+  th, td { border: 1px solid #bbb; padding: 4px 7px; text-align: left; vertical-align: top; }
+  th { background: #efefef; }
+  .warn { background: #fff3e6; border-left: 4px solid #e07b00; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .stop { background: #fdecec; border-left: 4px solid #c0392b; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .tip  { background: #eaf3ea; border-left: 4px solid #2e7d32; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  ol li, ul li { margin-bottom: 5px; }
+  code { font-family: "SF Mono", Menlo, monospace; font-size: 9pt; background: #f2f2f2; padding: 0 3px; border-radius: 2px; }
+  pre { font-family: "SF Mono", Menlo, monospace; font-size: 8.5pt; background: #f2f2f2; padding: 8px 10px; border-radius: 4px; }
+  .checklist li { list-style: none; margin-left: -18px; }
+  .checklist li::before { content: "☐  "; }
+  .pagebreak { page-break-before: always; }
+  .small { font-size: 9pt; color: #555; }
+</style>
+
+<h1>OpenTPMS Enclosure — Design Brief</h1>
+<p class="subtitle">Everything needed to CAD the Rev 1 enclosure &nbsp;·&nbsp; dimensions verified against fabricated-board gerbers &nbsp;·&nbsp; 2026-08-24</p>
+<p class="small">Supersedes the geometry assumptions in design-spec §4 where they conflict — the fabricated Rev 1 board is the ground truth. Companion: <code>docs/assembly-guide.html</code>, <code>hardware/enclosure/README.md</code>.</p>
+
+<h2>0 · Mission — what this enclosure must do on the rim</h2>
+<p>The assembled sensor lives clamped to the tubeless valve stem (head → PCB → rubber seal → rim), inside the tire, riding in a fog of latex sealant at up to 4 bar and −30 to +60°C, taking repeated 50–100g impacts. Once installed it is invisible until a battery swap 2–3 years later. In priority order, the enclosure must:</p>
+<ol>
+<li><b>Keep sealant and water off the electronics</b> (Block A) and <b>off the battery contacts</b> (Block B) — a latex film across the battery pad or a corroded trace is a dead sensor.</li>
+<li><b>Hold the CR1225 in electrical contact</b> — top spring pressure (BeCu leaf in lid, ~0.25mm compression) and bottom pad contact, through vibration, forever. Intermittent battery contact is the worst failure mode: it looks like a firmware bug.</li>
+<li><b>Survive tire installation</b> — levers and beads will press on it. Rounded/chamfered top edges, stout walls, nothing that snags.</li>
+<li><b>Open with 2 screws for battery swap</b> (Block B only) and reseal reliably, in a garage, by a normal human.</li>
+<li><b>Stay out of the radio's way</b> — plastic only near the BLE antenna, clearance above it.</li>
+<li><b>Fit</b>: total height ≤ ~7mm including screw heads (tire-insert compatibility), zero material below the PCB plane (PCB bottom is the mounting face), and clear of the valve clamp zone entirely.</li>
+</ol>
+
+<h2>1 · Geometry workflow — design around the exported board, verify against this brief</h2>
+<div class="stop"><b>Do not hand-transcribe component positions into CAD.</b> While preparing this brief, the pick-and-place file's battery-pad origin turned out to be 4mm away from the actual copper pad (Eagle exports part origins, not body centroids). The only trustworthy sources are the copper/drill gerbers and Fusion's own 3D model.</div>
+<ol>
+<li>In Fusion 360 Electronics, open the OPENTMS v26 board and use <b>“Push to 3D PCB”</b> (or export the board as STEP) so you get the real board outline, valve hole, and component bodies as solids.</li>
+<li>Insert that board model into a new Fusion design as the reference skeleton. Model both frames and lids around it. Never move the board; the enclosure conforms to it.</li>
+<li>Cross-check the model against the gerber-verified anchor dimensions below — if Fusion disagrees with these, stop and investigate.</li>
+</ol>
+
+<h3>Gerber-verified anchors (origin = board lower-left corner, X across width, Y along length)</h3>
+<table>
+<tr><th>Feature</th><th>Value</th><th>Source</th></tr>
+<tr><td>Board outline</td><td>19.0 × 42.0 mm, 0.8mm thick FR4/ENIG</td><td>profile.gbr frame</td></tr>
+<tr><td>Valve hole</td><td>Ø6.00mm, center at <b>(10.0, 21.0)</b> — dead center of both axes</td><td>profile.gbr routed circle</td></tr>
+<tr><td>Battery pad (negative contact)</td><td>Ø10.0mm ENIG, center at <b>(10.0, 7.5)</b> → a Ø12.5 battery spans Y 1.25–13.75, X 3.75–16.25</td><td>copper_top D21 flash</td></tr>
+<tr><td>PCB mounting holes ×4</td><td>Ø1.6mm at (3.0, 2.0), (17.0, 2.0), (17.5, 40.0), (2.5, 40.0) — free for enclosure alignment pins</td><td>drill file T1</td></tr>
+<tr><td>SWD test pads</td><td>TP1/TP2 near right edge of Block A zone; TP3/TP4 in Block B zone (Ø1.27 pads)</td><td>PnP (positions approximate — locate in Fusion)</td></tr>
+</table>
+<div class="warn"><b>Battery vs. bottom board edge:</b> the battery circle comes within <b>1.25mm of the board's short edge</b>. A 1.2mm wall + clearance does not fit on-board there. Solution: let the bottom wall's outer face overhang the board edge by ~0.4mm (the wall bonds on its on-board portion; the overhang is cosmetic), giving a ~13.1mm pocket with ≥0.3mm battery clearance.</div>
+
+<h2 class="pagebreak">2 · The four zones (this replaces the spec's tidy two-block picture)</h2>
+<p>The fabricated layout puts the pressure sensor <b>next to the valve</b>, not in the battery block. Reality on this board, walking Y from the battery end to the antenna end:</p>
+<table>
+<tr><th>Zone</th><th>Y span (approx)</th><th>Contents</th><th>Enclosure treatment</th></tr>
+<tr><td><b>Block B — battery</b></td><td>~0 – 15</td><td>Ø10 battery pad, C8 (220µF, 1.35mm tall), C2, R1, TP3/TP4</td><td>Sealed, o-ring lid, 2 screws — the serviceable block</td></tr>
+<tr><td><b>Valve corridor</b></td><td>~15 – 24 (X-dependent)</td><td>Valve hole + clamp zone; <b>MS5837 (U1) immediately left of the hole</b>; C5/C6 NFC caps right of it; R2</td><td><b>Open — no enclosure.</b> Valve head + seal clamp here. Everything conformal-coated; sensor treatment: see §6</td></tr>
+<tr><td><b>Block A — electronics</b></td><td>~24 – 39</td><td>MDBT42Q module (2.2mm tall), LIS2DH12, L1, C7, C3/C4, TP1/TP2</td><td>Sealed; recommend RTV-bonded lid (§5) — opened rarely if ever</td></tr>
+<tr><td><b>Antenna margin</b></td><td>~39 – 42</td><td>Module chip antenna end + bare board</td><td>Thin ABS wall only, ≥1mm air above antenna, no brass inserts within ~5mm (§7)</td></tr>
+</table>
+<div class="stop"><b>Critical measurement before any CAD: the valve head diameter.</b> The MS5837 body sits roughly 4.4mm from the valve center (verify exact distance in Fusion), and the module's near edge may be closer still. The Slicy Rocket's machined head must seat flat on bare PCB without touching either. <b>Measure the Slicy head Ø and its underside flatness with calipers.</b> If head radius ≥ the sensor/module clearance: use a smaller-Ø washer under the head, try the CushCore/Muc-Off valve instead, or shim — resolve this before modeling the corridor width. Also verify the top-side annulus under the head is free of silkscreen and traces (bare or soldermask-only).</div>
+<div class="warn"><b>Spec deviation to record:</b> design-spec §4 places the MS5837 + ePTFE port inside Block B. The fabricated board contradicts this — Rev 1 must handle the sensor in the open corridor (§6), and <b>Rev 2 layout should move U1 well inside a sealed block</b> with a proper membrane port. Add to v2-roadmap.</div>
+
+<h2>3 · Component and hardware dimensions (datasheet values)</h2>
+<table>
+<tr><th>Item</th><th>Dimensions</th><th>Enclosure-relevant notes</th></tr>
+<tr><td>MDBT42Q module</td><td>15.5 × 10.5 × <b>2.2</b>mm</td><td>Tallest part in Block A. Long axis along board length; antenna at the outboard (Y=42) end</td></tr>
+<tr><td>MS5837-30BA</td><td>3.3 × 3.3 × <b>2.75</b>mm, gel port on top (Ø~1.5 hole in metal cap)</td><td>In the open corridor. Port must stay unobstructed and un-coated</td></tr>
+<tr><td>LIS2DH12</td><td>2 × 2 × <b>1.0</b>mm</td><td>No constraint beyond cavity height</td></tr>
+<tr><td>C8 220µF (1206)</td><td>3.2 × 1.6 × <b>1.35</b>mm max</td><td>Inside Block B, ~0.8mm outside the battery circle — cavity must cover it</td></tr>
+<tr><td>L1 (0603 overhang)</td><td>1.6 × 0.8 × <b>0.8</b>mm</td><td>Block A</td></tr>
+<tr><td>0402 passives</td><td>1.0 × 0.5 × <b>0.6</b>mm</td><td>—</td></tr>
+<tr><td>CR1225 (Renata)</td><td>Ø<b>12.5</b> (12.2–12.48) × <b>2.5</b>mm max. Negative = flat bottom + rim wall; positive = top face only (the can top)</td><td>⚠ the negative can wraps up the side wall — the lid pocket and spring must touch <b>only the top face</b>, never the side, or it shorts</td></tr>
+<tr><td>BeCu spring stock</td><td>0.1mm × 5mm strip; cut ~15mm tabs</td><td>Formed into shallow Z/arc; working deflection ~0.25–0.4mm; solder tail exits pocket to a VCC pad</td></tr>
+<tr><td>M1.4 DIN912 screw</td><td>Thread Ø1.4 × 3mm; head Ø2.6 × 1.4 tall; hex 1.3mm</td><td>Head protrudes above lid (or counterbore into a 1.6mm lid)</td></tr>
+<tr><td>Heat-set insert</td><td>M1.4, OD 2.3mm knurled, ~3.0mm long</td><td>Boss Ø5.5mm, boss height ≥4.0mm; pilot hole Ø2.0–2.1 × 3.5 deep</td></tr>
+<tr><td>O-ring (purchased)</td><td>12.0 OD × 10.0 ID × 1.0 CS silicone</td><td><b>Too small for Block B — see §5 math.</b> Keep as spares/small ports</td></tr>
+<tr><td>ePTFE membrane discs</td><td>adhesive-backed, cut to ~Ø5</td><td>Only used if the §6 pod option is chosen; bench-test hydrophobicity first (standing item)</td></tr>
+<tr><td>Slicy Rocket V2 valve</td><td><b>measure:</b> head Ø + thickness, seal Ø + free height, stem Ø above seal (~5.8 ✓), thread length</td><td>Defines the corridor keep-out and the stack the locknut compresses</td></tr>
+</table>
+
+<h2 class="pagebreak">4 · Height stack-ups (targets)</h2>
+<table>
+<tr><th>Layer</th><th>Block A (RTV-bonded lid)</th><th>Block B (o-ring lid)</th></tr>
+<tr><td>PCB (the floor)</td><td>0.8</td><td>0.8</td></tr>
+<tr><td>Tallest content</td><td>module 2.2</td><td>battery 2.5</td></tr>
+<tr><td>Air / spring workspace</td><td>0.5 (antenna breathing room)</td><td>0.4 (spring at working deflection)</td></tr>
+<tr><td>Seal allowance</td><td>~0.1 RTV film</td><td>0.25 (1.0 CS o-ring compressed 25% in a 0.75-deep groove: 0.75 land + protrusion)</td></tr>
+<tr><td>Lid</td><td>1.2</td><td>1.2</td></tr>
+<tr><td><b>Lid surface above rim bed</b></td><td><b>~4.8mm</b></td><td><b>~5.2mm</b></td></tr>
+<tr><td>+ M1.4 screw heads</td><td>(none — bonded)</td><td>+1.4 → <b>6.6mm</b>, or 1.6mm lid with counterbores → ~5.4</td></tr>
+</table>
+<p>Both under the 7mm insert-compatibility target. Counterbored Block B lid is worth the extra 0.4mm of lid thickness — flush top survives tire levers better too.</p>
+
+<h2>5 · Sealing — one block bonded, one block serviceable</h2>
+<h3>Block A: RTV-bonded lid (recommended change from spec)</h3>
+<p>The o-ring math kills a gasketed Block A: its cavity must clear the 10.5mm-wide module plus side components, giving a groove centerline perimeter of ~55–60mm. The purchased Ø12×1 rings (centerline ≈ 34.6mm) would need ~70% stretch — impossible (face-seal limit ≈ 5%). Options, in order of recommendation:</p>
+<ol>
+<li><b>Bond the lid with a thin RTV bead</b> — same sealant as the frame-to-PCB joint, cures rubbery, and is cuttable with a blade for the rare reflash (SWD pads are inside Block A). Simplest, flattest, most reliable. "Not user-serviceable, openable for advanced repair" is exactly the spec's intent.</li>
+<li><b>Printed TPU gasket</b> — you own the printers: a 0.8mm-thick, 1.5mm-wide TPU ring printed flat, compressed 25% under a screwed lid. Serviceable and custom-shaped for free; costs the two screws' bosses + height.</li>
+<li>Correctly-sized o-ring (~Ø19–20 × 1) — order later if wanted; don't block on it.</li>
+</ol>
+<h3>Block B: real o-ring — but the right size</h3>
+<p>Groove sizing per standard face-seal practice for 1.0mm CS: depth 0.75mm, width 1.3–1.4mm, target 0–5% centerline stretch. The Block B cavity must swallow a Ø13.1 battery pocket plus C8 — expect a rounded-rectangle groove centerline of roughly 15.5 × 15.5 with r3 corners ⇒ perimeter ≈ 2(9.5)+2(9.5)+2π(3) ≈ <b>56.8mm ⇒ o-ring ID ≈ 17–18mm × 1.0 CS</b>. The purchased 12mm rings cannot stretch to this.</p>
+<div class="tip"><b>Unblock yourself with TPU:</b> print Block B's gasket too (same 0.8 × 1.5mm section, exact racetrack shape traced from the CAD groove). Zero waiting, perfect fit, and battery swaps just get a fresh gasket from a drawer of printed spares. Order proper Ø17×1 silicone o-rings later if the TPU gasket disappoints in the submersion test. Update the BOM either way.</div>
+
+<h2>6 · The exposed sensor — corridor options for Rev 1</h2>
+<p>U1 sits in the open valve corridor, so the spec's membrane-in-lid is off the table this rev. Options:</p>
+<table>
+<tr><th>Option</th><th>What</th><th>Verdict</th></tr>
+<tr><td>A. Open + coat around</td><td>Conformal/RTV coat the corridor traces and around the sensor base; the gel port stays open to tire air. The gel itself is the sensor's media barrier (these sense in seawater)</td><td><b>Default for board #1.</b> Risk is dried latex slowly caking the port — accept for the first field test; inspect at teardown</td></tr>
+<tr><td>B. Three-sided splash hood</td><td>Tiny printed hood (~6×6×4) RTV'd to the PCB over the sensor, open toward the valve side where there's no wall room. Blocks direct sealant spray, no seal claimed</td><td>Cheap add-on once Option A's teardown shows whether spray is a real problem</td></tr>
+<tr><td>C. Sensor-glued pod + membrane</td><td>Micro-pod bonded to the sensor's own ceramic sides, ePTFE disc on top</td><td>Fiddly at 3.3mm scale; only if A/B fail. Real fix is Rev 2 layout</td></tr>
+</table>
+
+<h2 class="pagebreak">7 · Fastening, alignment, RF and battery interface details</h2>
+<ul>
+<li><b>Screws/inserts (Block B, ×2):</b> place bosses on the left/right walls at the battery's mid-height, diagonal if space forces it. Boss Ø5.5, insert pilot Ø2.0–2.1, boss merged into the 1.2mm wall (locally thickened). Screw engagement ≥2.5mm.</li>
+<li><b>Alignment pins:</b> print Ø1.5 × 1.2mm pins on the frame undersides matching the four Ø1.6 PCB holes — self-locating frames during the RTV bond, no jig needed. Two pins per frame.</li>
+<li><b>Battery pocket:</b> Ø13.1 in the frame interior (0.3 radial clearance), pocket walls full height so the cell cannot walk sideways. <b>The lid may only touch the cell's top face</b> (positive); keep ≥0.4mm gap to the cell's side wall (negative can) everywhere — including the spring, whose free ends must not curl to the edge.</li>
+<li><b>Spring pocket in B lid:</b> recess 5.3mm wide × ~0.8 deep across the lid underside center, with two retention nubs or a slot the BeCu tab snaps into; solder-tail channel exiting toward the VCC pad location (place the pad-side exit in CAD after locating the VCC pad in Fusion). Spring formed to press the cell center with 0.25–0.4mm deflection at closed lid.</li>
+<li><b>Polarity emboss:</b> "+" embossed 0.4mm proud inside the B lid AND "+ TOP" debossed on the outside — the only reverse-battery protection this device has.</li>
+<li><b>RF:</b> no brass inserts, no screws within ~5mm of the antenna end (Y ≈ 39–42); wall there stays 1.2mm ABS with ≥1mm air above the antenna. NFC loop is on the PCB bottom — nothing needed, just never add foil/metallic labels under the board.</li>
+<li><b>Bottom face:</b> the PCB bottom is the mounting plane. Frames add zero material below it. Chamfer all outer top edges ≥0.6mm (tire-lever survival).</li>
+</ul>
+
+<h2>8 · On-rim mechanics (why some of these rules exist)</h2>
+<ul>
+<li>The strip lies <b>along the rim circumference</b>, a 42mm chord on a curved bed: on a 29er rim the sagitta is ~0.75mm, so with the center clamped at the valve, <b>the board ends hover up to ~1mm above the rim bed</b> — matching Outrider's published drawing. The enclosure must not assume bed contact anywhere; all retention comes from the valve clamp + RTV bond stiffness.</li>
+<li>Tire beads seat ~0–3mm from the board's long edges on narrow rims; block walls take incidental bead/lever contact — hence chamfers, 100% infill, and no overhangs that could be peeled.</li>
+<li>Total mass target ≤2.5g of printed parts — it's rotating mass at the rim, and lighter blocks shake less.</li>
+</ul>
+
+<h2>9 · Printing &amp; tolerances</h2>
+<table>
+<tr><th>Parameter</th><th>Value</th></tr>
+<tr><td>Material</td><td>ABS (acetone-smoothable seal faces). TPU 95A for printed gaskets</td></tr>
+<tr><td>Layers / walls / infill</td><td>0.1mm layers, ≥3 perimeters, 100% infill</td></tr>
+<tr><td>Fit clearances (FDM)</td><td>battery pocket +0.3 radial; lid-to-frame lip +0.15/side; alignment pins −0.1 vs hole; insert pilot per insert spec (test coupon first!)</td></tr>
+<tr><td>Post-process</td><td>Acetone-vapor smooth gasket/groove faces only (masking the rest); test smoothing on a coupon before the real parts</td></tr>
+<tr><td>First prints</td><td>A test coupon with: one insert boss, one alignment pin, a battery pocket ring, and a gasket groove — dial all four fits before printing full frames</td></tr>
+</table>
+
+<h2>10 · Pre-CAD measurement gate (do these with calipers before modeling)</h2>
+<ul class="checklist">
+<li>Slicy Rocket head: Ø, underside geometry, thickness; seal Ø and free height; thread length above seal</li>
+<li>Physical board: distance valve-hole edge → MS5837 body, → module body, → C5 (sets corridor + head clearance)</li>
+<li>Confirm head seats flat on bare PCB annulus with seal fitted below (dry-fit the full clamp on a bare board)</li>
+<li>Battery dry-fit: cell on the pad — confirm it sits flat, clears C8 (should, by ~0.8mm) — do this once C8 is soldered</li>
+<li>Locate in Fusion: TP1–TP4, the VCC pad for the spring tail, exact silkscreen keep-outs near the hole</li>
+<li>Rim check: lay a bare board in the actual test wheel — confirm chord/hover behavior and bead clearance on YOUR rim profile</li>
+</ul>
+
+<h2>11 · CAD deliverables &amp; assembly-sequence gates</h2>
+<p><b>Files</b> (matches hardware/enclosure/README): <code>block_a_frame</code>, <code>block_a_lid</code>, <code>block_b_frame</code>, <code>block_b_lid</code> (+ <code>gasket_b</code> TPU, optional <code>gasket_a</code>, optional <code>sensor_hood</code>), <code>assembly.step</code> with the board model in place.</p>
+<div class="warn"><b>Sequence gates the CAD must respect:</b>
+<ol>
+<li>Frames bond to the PCB <b>after</b> SMT assembly, flashing (incl. DFU bootloader!), calibration, and the twi_scanner acceptance test — SWD pads end up inside the blocks, so the board must be firmware-complete before bonding. OTA covers everything after.</li>
+<li>Conformal/RTV coating of the corridor happens <b>before</b> frame bonding (coat wet edges under future walls) but <b>masks the frame bond footprints</b> — RTV bonds to bare mask, not to cured coating. Kapton-mask the bond outlines during coating; the CAD should export a 1:1 paper template of the bond footprints for this.</li>
+<li>Valve clamp dry-fit is possible at any stage (corridor stays open) — but final install torque only after frames cure 24h.</li>
+</ol></div>
+
+<h2>12 · Decisions this brief makes (veto now or they stand)</h2>
+<ol>
+<li>Block A lid: RTV-bonded, no screws (flatter, simpler, reflash via DFU or blade)</li>
+<li>Block B gasket: printed TPU racetrack now; proper ~Ø17×1 silicone o-ring ordered later if submersion test says so; purchased 12mm rings demoted to spares</li>
+<li>Block B lid: 1.6mm thick with counterbored screws (flush top, ~5.4mm total)</li>
+<li>Sensor: Option A (open + coat around) for board #1's field test; hood as bolt-on if teardown shows caking; Rev 2 relocates U1 into a sealed block</li>
+<li>Battery pocket wall at the board's short edge overhangs the PCB outline by ~0.4mm</li>
+</ol>
+
+<p class="small" style="margin-top:24px">OpenTPMS · CC BY-NC-SA 4.0 · Geometry verified against OPENTPMSv1 gerbers 2026-08-24 · The board STEP from Fusion Electronics is the modeling reference; this brief is the requirements + verified anchors.</p>
