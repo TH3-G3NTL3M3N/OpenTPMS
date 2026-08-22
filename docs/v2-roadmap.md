@@ -45,18 +45,23 @@ Notes for future revision based on competitive analysis (Outrider TL Pro teardow
    - Options: P-FET ideal-diode (near-zero drop), series Schottky (~0.3V drop hurts at end-of-life), or mechanical keying in the battery pocket
    - Moot if v2 goes potted/non-replaceable (CR1632 potted design) — but required if the replaceable battery is kept
 
-8. **Optimized antenna placement**
+8. **Valve clamp keepout (hard requirement, learned on Rev 1)**
+   - Rev 1's clamp annulus is too small: real valve heads (Slicy/Reserve ~9–10mm) overlap the module's pad row (0.8mm from hole edge) — Rev 1 prototypes need a printed 9→7mm taper adapter or a spare rubber seal as top cushion
+   - v2: reserve a bare Ø12mm annulus around the valve hole — no pads, no component bodies within it, and no traces under it (metal head wears soldermask over time)
+   - Move the MS5837 out of the valve corridor into a sealed block (also fixes the membrane-in-lid concept that Rev 1's layout broke)
+
+9. **Optimized antenna placement**
    - PCB trace antenna on the thin end (1.6mm section, away from battery)
    - Ground pour keep-out zone designed into the linear layout
    - No module antenna constraints
 
 ### Firmware Changes
 
-9. **ANT+ only option (drop concurrent BLE for power savings)**
+10. **ANT+ only option (drop concurrent BLE for power savings)**
    - Outrider TL Pro is ANT+ only — achieves 5+ year battery life
    - Could offer two firmware variants: ANT+ only (max battery) or ANT+/BLE (more compatible)
 
-10. **NFC pairing (already hardware-ready from v1)**
+11. **NFC pairing (already hardware-ready from v1)**
    - Enable NFC in firmware for tap-to-pair setup before potting
 
 ### What Stays the Same
