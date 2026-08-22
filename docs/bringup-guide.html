@@ -42,6 +42,13 @@
 <div class="warn"><b>Unzip the SDK OUTSIDE the repo</b> — e.g. <code>~/nordic/nRF5_SDK_17.1.0_ddde560</code>. It's ~500MB of Nordic code that never goes in git. Our Makefile/SES project will reference it by path.</div>
 <div class="tip"><b>Why nRF5 SDK and not the newer nRF Connect SDK (Zephyr)?</b> Concurrent BLE+ANT on nRF52832 runs on the S332 SoftDevice, which belongs to the classic nRF5 SDK world. The nRF5 SDK is in maintenance mode but fully functional and stays the right choice for this chip + ANT combination. Don't mix tutorials from the two ecosystems — if a tutorial says <code>west build</code> or "Zephyr," it's the wrong SDK.</div>
 
+<div class="warn"><b>SES 8.x + SDK 17.1 compatibility (verified on SES 8.30a, 2026-08-22):</b> the SDK's example projects predate SES 8 and fail to link out of the box with <code>.text section is larger than specified size</code> / same for <code>.rodata</code>. Two one-time fixes:
+<ol>
+<li>Add <code>arm_linker_variant="GNU"</code> to the <code>&lt;configuration Name="Common"&gt;</code> block of the <code>.emProject</code> (SES 8 defaults to the SEGGER linker; the SDK expects GNU ld).</li>
+<li>In the project's <code>flash_placement.xml</code>, delete the bogus <code>size="0x4"</code> attribute from the <code>.text</code> and <code>.rodata</code> ProgramSection lines — old linkers ignored it, SES 8's enforces it as a 4-byte cap.</li>
+</ol>
+Both can be applied across the whole SDK in one shell pass (every <code>.emProject</code> and every <code>flash_placement*.xml</code>). Also: brand-new chips ship with readback protection — the first flash needs <code>nrfutil device recover</code> once.</div>
+
 <h3>A2 · Day 1: prove the hardware loop (blink)</h3>
 <ol>
 <li>Plug the DK into USB. A drive named <code>JLINK</code> appears — that's the on-board debugger. Power switch ON (it's easy to miss, bottom left).</li>
