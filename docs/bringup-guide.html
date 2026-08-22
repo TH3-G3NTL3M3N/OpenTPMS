@@ -48,6 +48,11 @@
 <li>In the project's <code>flash_placement.xml</code>, delete the bogus <code>size="0x4"</code> attribute from the <code>.text</code> and <code>.rodata</code> ProgramSection lines — old linkers ignored it, SES 8's enforces it as a 4-byte cap.</li>
 <li><code>SEGGER_RTT_Syscalls_SES.c</code> fails with <code>__vfprintf.h: No such file or directory</code> — the SDK bundles an old SEGGER file that includes a header removed from modern SES runtimes. Fix: wrap the file's contents in a <code>__has_include("__vfprintf.h")</code> guard so it compiles to nothing on SES 8 (the file only retargeted printf to RTT; NRF_LOG doesn't need it). One shared copy at <code>external/segger_rtt/</code> covers all examples.</li>
 </ol>
+And two more that hit every fresh setup regardless of SES version, the moment you build an <b>s332-variant</b> project:
+<ol start="4">
+<li><b><code>ble.h: No such file or directory</code></b> — the SDK ships the <code>components/softdevice/s332/</code> scaffold but legally cannot bundle Garmin's headers. Marry them in yourself from the thisisant download: copy the API <code>include/*.h</code> files into <code>components/softdevice/s332/headers/</code> (flat, mirroring the s132 layout — the <code>nrf52/nrf_mbr.h</code> subfolder comes along) and drop the SoftDevice hex in <code>s332/hex/</code>.</li>
+<li><b><code>#error "You must obtain a valid license key to use ANT..."</code></b> — deliberate license gate in <code>s332/headers/nrf_sdm.h</code>. For non-commercial prototypes, uncomment the <code>ANT_LICENSE_KEY</code> evaluation-key line directly above the #error. Commercial sales require the paid key ($0.08/unit royalty, $800/6-mo minimum — see PROD notes).</li>
+</ol>
 Both can be applied across the whole SDK in one shell pass (every <code>.emProject</code> and every <code>flash_placement*.xml</code>). Also: brand-new chips ship with readback protection — the first flash needs <code>nrfutil device recover</code> once.</div>
 
 <h3>A2 · Day 1: prove the hardware loop (blink)</h3>
